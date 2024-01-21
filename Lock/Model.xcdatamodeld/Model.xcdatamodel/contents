@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="21754" systemVersion="22F82" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
+    <entity name="Log" representedClassName="Log" syncable="YES" codeGenerationType="class">
+        <attribute name="locationName" optional="YES" attributeType="String"/>
+        <attribute name="response" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>
+        <attribute name="time" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
+    </entity>
+    <entity name="Spots" representedClassName="Spots" syncable="YES" codeGenerationType="class">
+        <attribute name="address" optional="YES" attributeType="String"/>
+        <attribute name="customNotificationBody" optional="YES" attributeType="String"/>
+        <attribute name="customNotificationTitle" optional="YES" attributeType="String"/>
+        <attribute name="distanceFromSpot" optional="YES" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="id" optional="YES" attributeType="UUID" usesScalarValueType="NO"/>
+        <attribute name="latitude" optional="YES" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
+        <attribute name="longitude" optional="YES" attributeType="Double" valueTransformerName="" defaultValueString="0.0" usesScalarValueType="YES"/>
+        <attribute name="nameOfLocation" optional="YES" attributeType="String"/>
+        <attribute name="notifyOnBoth" optional="YES" attributeType="Boolean" defaultValueString="0.0" usesScalarValueType="YES"/>
+    </entity>
+</model>
