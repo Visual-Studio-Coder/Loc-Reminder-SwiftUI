@@ -144,7 +144,7 @@ struct AddSpotView: View {
                     
                     
                 } footer: {
-                    Text("By default, you will only be notified when you leave a spot.")
+                    Text(notifyOnBoth ? "You will be notified when you leave AND arrive at a spot. Toggle the switch above to make changes." : "You will only be notified when you leave a spot. Toggle the switch above to make changes.")
                 }
                 
                 

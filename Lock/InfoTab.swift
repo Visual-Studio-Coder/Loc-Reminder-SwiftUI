@@ -33,12 +33,12 @@ struct InfoTab: View {
 					startPoint: .leading,
 					endPoint: .trailing
 				), flatGradient: LinearGradient(gradient: Gradient(colors: [.white,.init(red: 0.584, green: 0.749, blue: 1)]), startPoint: .top, endPoint: .bottom)))
-				Text("Source Code")
-					
+				Text("GitHub")
+                    .padding(10)
 					.scaledToFill()
 			}
 			
-			Divider()
+			//Divider()
 			
 			VStack{
 				Button(action: {openURL(URL(string:"https://0mx7ody576p.typeform.com/to/AdoFf4iE")!)}) {
@@ -62,10 +62,11 @@ struct InfoTab: View {
 					endPoint: .trailing
 				), flatGradient: LinearGradient(gradient: Gradient(colors: [.white,.init(red: 0.584, green: 0.749, blue: 1)]), startPoint: .top, endPoint: .bottom)))
 				Text("Report Bugs")
+                    .padding(10)
 					.scaledToFill()
 			}
 			
-			Divider()
+			//Divider()
 			
 			VStack{
 				Button(action: {openURL(URL(string: "https://www.buymeacoffee.com")!)}) {
@@ -89,8 +90,9 @@ struct InfoTab: View {
 					startPoint: .leading,
 					endPoint: .trailing
 				), flatGradient: LinearGradient(gradient: Gradient(colors: [.white,.init(red: 0.584, green: 0.749, blue: 1)]), startPoint: .top, endPoint: .bottom)))
-				Text("Buy Me a Coffee")
-					.scaledToFill()
+                Text("Buy Me a Coffee")
+                    .padding(10)
+                    .scaledToFill()
 			}
 		}
 		.padding()

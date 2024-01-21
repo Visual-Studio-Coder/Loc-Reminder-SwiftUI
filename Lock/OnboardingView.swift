@@ -8,81 +8,48 @@
 import SwiftUI
 import CoreLocation
 import LocationAlwaysPermission
+import NotificationPermission
 import UserNotifications
 import PermissionsKit
 
 struct OnboardingView: View {
-	
 	@State var showingAlert = false
 	@State var showingAlert1 = false
-	
+    @State var showingAlert2 = false
 	@AppStorage("shouldShowOnboarding") var dontShowOnboarding : Bool = false
-	
 	@AppStorage("fadeInOut") public var fadeInOut : Bool = false
-	
 	@StateObject var locationDataManager = LocationPermission()
-	
 	@State private var value = 1.0
-	
-	
 	@State private var canTouchDown = true
 	let impact = UIImpactFeedbackGenerator(style: .medium)
 	@State private var selectedPage = 0
-	
 	@State private var isLocationAuthorized = false
 	private let locationManager = CLLocationManager()
-	
-	
 	func locationManagerDidChangeAuthorization(_ manager: CLLocationManager) {
 		switch manager.authorizationStatus {
 		case .authorizedWhenInUse:  // Location services are available.
-			
 			break
-			
 		case .restricted, .denied:  // Location services currently unavailable.
-			
 			break
-			
 		case .notDetermined:        // Authorization not determined yet.
 			manager.requestAlwaysAuthorization()
 			break
-			
 		default:
 			break
 		}
 	}
-	
 	let coolView = AuroraView()
-	
 	var body: some View {
-		
-		
-		
 		ZStack{
-			
 			coolView
-			
-			
 			TabView(selection: $selectedPage, content: {
-					//onboarding page one
 				VStack() {
-					/*AuroraView()
-					 .frame(minWidth: 0, maxWidth: .infinity, minHeight: 0, maxHeight: .infinity)
-					 .edgesIgnoringSafeArea(.all)*/
-					
-					
 					VStack{
 						@ObservedObject var manager = MotionManager()
 						ParallaxView()
 							.scaledToFit()
 							.scaleEffect(value)
-				
 							.frame(width: 400, height: 400)
-						
-						
-						
-						
-						
 						Text("Lock Reminder")
 							.font(.largeTitle
 								.bold())
@@ -94,13 +61,10 @@ struct OnboardingView: View {
 							.foregroundColor(.white)
 							.multilineTextAlignment(.center)
 							.padding(.horizontal, 20)
-						
-						
 						Spacer()
 						Button("Continue"){
 							withAnimation(Animation.spring().delay(2)) { selectedPage += 1
 							}
-							
 						}
 						.padding([.leading, .bottom, .trailing], 20.0)
 						.frame(width: 332, height: 75)
@@ -123,37 +87,14 @@ struct OnboardingView: View {
 								value = 1.1
 							}
 						}
-						
-						
-						
-						
-						
-						
-						
 					}
-					
 					.padding()
-					
-					
-					
-					
 				}
 				.tag(0)
-					//onboarding page two
 				VStack {
-					/*AuroraView()
-					 .frame(minWidth: 0, maxWidth: .infinity, minHeight: 0, maxHeight: .infinity)
-					 .edgesIgnoringSafeArea(.all)*/
-					
-					
 					VStack{
-						
 						@ObservedObject var manager = MotionManager()
-						
-						
-						
 						Image("location")
-						
 							.resizable()
 							.cornerRadius(30)
 							.shadow(color: Color(hue: 1.0, saturation: 0.303, brightness: 0.549), radius: 22)
@@ -161,7 +102,6 @@ struct OnboardingView: View {
 							.padding(40)
 							.frame(width: 400, height: 400)
 							.modifier(ParallaxMotionModifier(manager: manager, magnitude: 15))
-						
 						Text("Enable Location")
 							.font(.largeTitle
 								.bold())
@@ -173,30 +113,46 @@ struct OnboardingView: View {
 							.foregroundColor(.white)
 							.multilineTextAlignment(.center)
 							.padding(.horizontal, 20)
-						
 						Spacer()
-						Button("Authorize"){
-							
+                        Button(action: {
+                                    guard let url = URL(string: "https://sites.google.com/view/lock-reminder/privacy-policy?authuser=1") else { return }
+                                    UIApplication.shared.open(url)
+                                }) {
+                                    HStack{
+                                        Image(systemName: "lock.fill")
+                                            .foregroundStyle(.white)
+                                        Text("We do not collect any data. Click to learn more")
+                                            .underline()
+                                            .shadow(color: .black, radius: 10)
+                                            .minimumScaleFactor(0.5)
+                                            .lineLimit(1)
+                                            .foregroundColor(.white)
+                                    }
+                                }
+						Button("Enable"){
 							let authorized = Permission.locationAlways.authorized
-							
-							
-							
 							Permission.locationAlways.request {
 								locationManager.stopUpdatingLocation()
 							}
-							
 							let key = Permission.locationAlways.usageDescriptionKey
-							
-							
-							if authorized {
+                            print(key!)
+							if !authorized {
 								showingAlert = true
-							}
-							
-							
-							
-						}.alert("Important message", isPresented: $showingAlert) {
-							Button("OK", role: .cancel) { }
-						}
+                            } else {
+                                withAnimation(Animation.spring().delay(2)) { selectedPage += 1
+                                }
+                            }
+						}.alert(isPresented: $showingAlert) {
+                            Alert(
+                                title: Text("Always Location Permission Required"),
+                                message: Text("Please enable the \"Always\" location permissions in settings so that this app can work even when it is not opened.."),
+                                dismissButton: .default(Text("Enable in Settings"), action: {
+                                    if let url = URL(string: UIApplication.openSettingsURLString) {
+                                        UIApplication.shared.open(url, options: [:], completionHandler: nil)
+                                    }
+                                })
+                            )
+                        }
 						.padding([.leading, .bottom, .trailing], 20.0)
 						.frame(width: 332, height: 75)
 						.buttonStyle(threeDimensionalButton(lateralGradient: LinearGradient(
@@ -218,34 +174,21 @@ struct OnboardingView: View {
 								value = 1.1
 							}
 						}
-						
-						
-						
-						
-						
-						
-						
-						
 					}
 					.padding()
-					
 				}
 				.tag(1)
-					//onboarding page three
 				VStack{
 					@ObservedObject var manager = MotionManager()
 					Image("notification")
-					
 						.resizable()
 						.foregroundColor(.red)
-					
 						.cornerRadius(30)
 						.shadow(color: .gray, radius: 22)
 						.scaledToFit()
 						.padding(40)
 						.frame(width: 400, height: 400)
 						.modifier(ParallaxMotionModifier(manager: manager, magnitude: 15))
-					
 					Text("Enable Notifications")
 						.font(.largeTitle
 							.bold())
@@ -258,35 +201,42 @@ struct OnboardingView: View {
 						.multilineTextAlignment(.center)
 						.padding(.horizontal, 20)
 					Spacer()
-					Button("Continue"){
-						UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .badge, .sound]) { success, error in
-							if success {
-								print("All set!")
-								
-								withAnimation(Animation.spring().delay(2)) { selectedPage += 1
-								}
-								
-								//showingAlert1 = true
-							} else if let error = error {
-								print(error.localizedDescription)
-								showingAlert1 = true
-							}
-							
-							
-								
-						}
-						
-						
-						
+                    Button(action: {
+                                guard let url = URL(string: "https://sites.google.com/view/lock-reminder/privacy-policy?authuser=1") else { return }
+                                UIApplication.shared.open(url)
+                            }) {
+                                HStack{
+                                    Image(systemName: "lock.fill")
+                                        .foregroundStyle(.white)
+                                    Text("We do not collect any data. Click to learn more")
+                                        .underline()
+                                        .shadow(color: .black, radius: 10)
+                                        .minimumScaleFactor(0.5)
+                                        .lineLimit(1)
+                                        .foregroundColor(.white)
+                                }
+                            }
+					Button("Enable"){
+                        let authorized = Permission.notification.authorized
+                        Permission.notification.request {
+                        }
+                        if !authorized {
+                            showingAlert1 = true
+                        } else {
+                            withAnimation(Animation.spring().delay(2)) { selectedPage += 1
+                            }
+                        }
 					}.alert(isPresented: $showingAlert1) {
 						Alert(
-							title: Text("Current Location Not Available"),
-							message: Text("Your current location can’t be " +
-										  "determined at this time.")
+							title: Text("Please Enable Notifications"),
+                            message: Text("To receive reminders, you must enable notificications."),
+                            dismissButton: .default(Text("Enable in Settings"), action: {
+                                if let url = URL(string: UIApplication.openSettingsURLString) {
+                                    UIApplication.shared.open(url, options: [:], completionHandler: nil)
+                                }
+                            })
 						)
 					}
-					
-					
 					.padding([.leading, .bottom, .trailing], 20.0)
 					.frame(width: 332, height: 75)
 					.tint(.green)
@@ -309,15 +259,10 @@ struct OnboardingView: View {
 							value = 1.1
 						}
 					}
-					
-					
-					
 				}
 				.padding()
 				.tag(2)
-					//onboarding page four
 				VStack{
-					
 					@ObservedObject var manager = MotionManager()
 					Image("LockReminderHappyFace")
 						.resizable()
@@ -329,7 +274,6 @@ struct OnboardingView: View {
 						.padding(40)
 						.frame(width: 400, height: 400)
 						.modifier(ParallaxMotionModifier(manager: manager, magnitude: 15))
-					
 					Text("Setup Complete")
 						.font(.largeTitle
 							.bold())
@@ -342,16 +286,26 @@ struct OnboardingView: View {
 						.multilineTextAlignment(.center)
 						.padding(.horizontal, 20)
 					Spacer()
-					
 					Button("Dismiss"){
-						
-						
-						dontShowOnboarding = true
-						self
-							.opacity(1)
-						
-						
+                        if Permission.notification.authorized && Permission.locationAlways.authorized{
+                            dontShowOnboarding = true
+                            self
+                                .opacity(1)
+                        } else {
+                            showingAlert2 = true
+                        }
 					}
+                    .alert(isPresented: $showingAlert2) {
+                        Alert(
+                            title: Text("Please Enable All The Necessary Permissions"),
+                            message: Text("To receive reminders, you must enable notificications, and you must enable \"Always\" location."),
+                            dismissButton: .default(Text("Enable in Settings"), action: {
+                                if let url = URL(string: UIApplication.openSettingsURLString) {
+                                    UIApplication.shared.open(url, options: [:], completionHandler: nil)
+                                }
+                            })
+                        )
+                    }
 					.padding([.leading, .bottom, .trailing], 20.0)
 					.frame(width: 332, height: 75)
 					.buttonStyle(threeDimensionalButton(lateralGradient: LinearGradient(
@@ -373,23 +327,15 @@ struct OnboardingView: View {
 							value = 1.1
 						}
 					}
-					
-					
-					
 				}
 				.padding()
 				.tag(3)
-				
-				
 			})
-			.tabViewStyle(PageTabViewStyle())
+            .tabViewStyle(PageTabViewStyle(indexDisplayMode: .automatic))
 			.frame(minWidth: 0, maxWidth: .infinity, minHeight: 0, maxHeight: .infinity)
 			.edgesIgnoringSafeArea(.all)
 		}
-		
-		
 	}
-	
 }
 struct OnboardingView_Previews: PreviewProvider {
     static var previews: some View {

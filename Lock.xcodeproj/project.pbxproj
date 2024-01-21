@@ -146,7 +146,6 @@
 		78D7A02029F8985100660C56 = {
 			isa = PBXGroup;
 			children = (
-				78761E292A6F2CEF00A50B7D /* LocationManager.swift */,
 				78D7A02B29F8985100660C56 /* Lock */,
 				78D7A03C29F8985300660C56 /* LockTests */,
 				78D7A04629F8985400660C56 /* LockUITests */,
@@ -169,6 +168,7 @@
 		78D7A02B29F8985100660C56 /* Lock */ = {
 			isa = PBXGroup;
 			children = (
+				78761E292A6F2CEF00A50B7D /* LocationManager.swift */,
 				78619F8C29F97C2F0034DC5D /* Info.plist */,
 				78F99CFA2A466CDA00FF1462 /* OnboardingView.swift */,
 				78F99CFD2A46A10F00FF1462 /* LocationDataManager.swift */,

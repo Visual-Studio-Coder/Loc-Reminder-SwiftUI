@@ -7,8 +7,8 @@
 		<string>fontDefault.ttf</string>
 	</array>
 	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
-	<string>Enable location so we can detect when you have left your home.</string>
+	<string>Enable location so we can detect when you have left your desired location.</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
-	<string>Your gay</string>
+	<string>Enable location so we can detect when you have left your desired location.</string>
 </dict>
 </plist>
