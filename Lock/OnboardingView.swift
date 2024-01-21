@@ -115,7 +115,57 @@ struct OnboardingView: View {
 							.padding(.horizontal, 20)
 						Spacer()
                         Button(action: {
-                                    guard let url = URL(string: "https://sites.google.com/view/lock-reminder/privacy-policy?authuser=1") else { return }
+							let authorized = Permission.locationAlways.authorized
+							Permission.locationAlways.request {
+								locationManager.stopUpdatingLocation()
+							}
+							let key = Permission.locationAlways.usageDescriptionKey
+                            print(key!)
+							if !authorized {
+								showingAlert = true
+                            } else {
+                                withAnimation(Animation.spring().delay(2)) { selectedPage += 1
+                                }
+                            }
+                        }){
+                            HStack{
+                                Text("Enable")
+                                Image(systemName: "bell.badge.fill")
+                            }
+                        }.alert(isPresented: $showingAlert) {
+                            Alert(
+                                title: Text("Always Location Permission Required"),
+                                message: Text("Please enable the \"Always\" location permissions in settings so that this app can work even when it is not opened.."),
+                                dismissButton: .default(Text("Enable in Settings"), action: {
+                                    if let url = URL(string: UIApplication.openSettingsURLString) {
+                                        UIApplication.shared.open(url, options: [:], completionHandler: nil)
+                                    }
+                                })
+                            )
+                        }
+						.padding([.leading, .bottom, .trailing], 20.0)
+						.frame(width: 332, height: 75)
+                        .buttonStyle(threeDimensionalButton(lateralGradient: LinearGradient(
+                            gradient: Gradient(stops: [
+                                .init(color: .init(red: 0.3, green: 0.5, blue: 0.9),
+                                      location: 0.00001),
+                                .init(color: .init(red: 0.484, green: 0.7, blue: 1),
+                                      location: 0.1),
+                                .init(color: .init(red: 0.484, green: 0.7, blue: 1),
+                                      location: 0.9),
+                                .init(color: .init(red: 0.3, green: 0.5, blue: 0.9),
+                                      location: 0.99999)
+                            ]),
+                            startPoint: .leading,
+                            endPoint: .trailing
+                        ), flatGradient: LinearGradient(gradient: Gradient(colors: [.white,.init(red: 0.584, green: 0.749, blue: 1)]), startPoint: .top, endPoint: .bottom)))
+						.onAppear {
+							withAnimation(.easeInOut(duration: 2)) {
+								value = 1.1
+							}
+						}
+                        Button(action: {
+                                    guard let url = URL(string: "https://sites.google.com/view/lock-reminder/privacy-policy") else { return }
                                     UIApplication.shared.open(url)
                                 }) {
                                     HStack{
@@ -129,94 +179,34 @@ struct OnboardingView: View {
                                             .foregroundColor(.white)
                                     }
                                 }
-						Button("Enable"){
-							let authorized = Permission.locationAlways.authorized
-							Permission.locationAlways.request {
-								locationManager.stopUpdatingLocation()
-							}
-							let key = Permission.locationAlways.usageDescriptionKey
-                            print(key!)
-							if !authorized {
-								showingAlert = true
-                            } else {
-                                withAnimation(Animation.spring().delay(2)) { selectedPage += 1
-                                }
-                            }
-						}.alert(isPresented: $showingAlert) {
-                            Alert(
-                                title: Text("Always Location Permission Required"),
-                                message: Text("Please enable the \"Always\" location permissions in settings so that this app can work even when it is not opened.."),
-                                dismissButton: .default(Text("Enable in Settings"), action: {
-                                    if let url = URL(string: UIApplication.openSettingsURLString) {
-                                        UIApplication.shared.open(url, options: [:], completionHandler: nil)
-                                    }
-                                })
-                            )
-                        }
-						.padding([.leading, .bottom, .trailing], 20.0)
-						.frame(width: 332, height: 75)
-						.buttonStyle(threeDimensionalButton(lateralGradient: LinearGradient(
-							gradient: Gradient(stops: [
-								.init(color: Color(#colorLiteral(red: 0.1636346579, green: 0.5416366458, blue: 0.08888492733, alpha: 1)),
-									  location: 0.00001),
-								.init(color: Color(#colorLiteral(red: 0.5286380649, green: 0.9115514159, blue: 0.5707022548, alpha: 1)),
-									  location: 0.1),
-								.init(color: Color(#colorLiteral(red: 0.5286380649, green: 0.9115514159, blue: 0.5707022548, alpha: 1)),
-									  location: 0.9),
-								.init(color: Color(#colorLiteral(red: 0.1636346579, green: 0.5416366458, blue: 0.08888492733, alpha: 1)),
-									  location: 0.99999)
-							]),
-							startPoint: .leading,
-							endPoint: .trailing
-						), flatGradient: LinearGradient(gradient: Gradient(colors: [.white, Color(#colorLiteral(red: 0.5279352069, green: 0.9114217162, blue: 0.5712119341, alpha: 0.7654180464))]), startPoint: .top, endPoint: .bottom)))
-						.onAppear {
-							withAnimation(.easeInOut(duration: 2)) {
-								value = 1.1
-							}
-						}
 					}
 					.padding()
 				}
 				.tag(1)
-				VStack{
-					@ObservedObject var manager = MotionManager()
-					Image("notification")
-						.resizable()
-						.foregroundColor(.red)
-						.cornerRadius(30)
-						.shadow(color: .gray, radius: 22)
-						.scaledToFit()
-						.padding(40)
-						.frame(width: 400, height: 400)
-						.modifier(ParallaxMotionModifier(manager: manager, magnitude: 15))
-					Text("Enable Notifications")
-						.font(.largeTitle
-							.bold())
-						.foregroundColor(.white)
-						.padding(10)
-					Text("Lock Reminder alerts you by delivering notifications if a location based event occurs.")
-						.frame(width: 332, height: 75)
-						.scaledToFill()
-						.foregroundColor(.white)
-						.multilineTextAlignment(.center)
-						.padding(.horizontal, 20)
-					Spacer()
+                VStack{
+                    @ObservedObject var manager = MotionManager()
+                    Image("notification")
+                        .resizable()
+                        .foregroundColor(.red)
+                        .cornerRadius(30)
+                        .shadow(color: .gray, radius: 22)
+                        .scaledToFit()
+                        .padding(40)
+                        .frame(width: 400, height: 400)
+                        .modifier(ParallaxMotionModifier(manager: manager, magnitude: 15))
+                    Text("Enable Notifications")
+                        .font(.largeTitle
+                            .bold())
+                        .foregroundColor(.white)
+                        .padding(10)
+                    Text("Lock Reminder alerts you by delivering notifications if a location based event occurs.")
+                        .frame(width: 332, height: 75)
+                        .scaledToFill()
+                        .foregroundColor(.white)
+                        .multilineTextAlignment(.center)
+                        .padding(.horizontal, 20)
+                    Spacer()
                     Button(action: {
-                                guard let url = URL(string: "https://sites.google.com/view/lock-reminder/privacy-policy?authuser=1") else { return }
-                                UIApplication.shared.open(url)
-                            }) {
-                                HStack{
-                                    Image(systemName: "lock.fill")
-                                        .foregroundStyle(.white)
-                                    Text("We do not collect any data. Click to learn more")
-                                        .underline()
-                                        .shadow(color: .black, radius: 10)
-                                        .minimumScaleFactor(0.5)
-                                        .lineLimit(1)
-                                        .foregroundColor(.white)
-                                }
-                            }
-					Button("Enable"){
                         let authorized = Permission.notification.authorized
                         Permission.notification.request {
                         }
@@ -226,40 +216,55 @@ struct OnboardingView: View {
                             withAnimation(Animation.spring().delay(2)) { selectedPage += 1
                             }
                         }
-					}.alert(isPresented: $showingAlert1) {
-						Alert(
-							title: Text("Please Enable Notifications"),
+                    }){
+                        HStack {
+                            Text("Enable")
+                            Image(systemName: "bell.badge.fill")
+                        }
+                    }.alert(isPresented: $showingAlert1) {
+                        Alert(
+                            title: Text("Please Enable Notifications"),
                             message: Text("To receive reminders, you must enable notificications."),
                             dismissButton: .default(Text("Enable in Settings"), action: {
                                 if let url = URL(string: UIApplication.openSettingsURLString) {
                                     UIApplication.shared.open(url, options: [:], completionHandler: nil)
                                 }
                             })
-						)
-					}
-					.padding([.leading, .bottom, .trailing], 20.0)
-					.frame(width: 332, height: 75)
-					.tint(.green)
-					.buttonStyle(threeDimensionalButton(lateralGradient: LinearGradient(
-						gradient: Gradient(stops: [
-							.init(color: Color(#colorLiteral(red: 0.1636346579, green: 0.5416366458, blue: 0.08888492733, alpha: 1)),
-								  location: 0.00001),
-							.init(color: Color(#colorLiteral(red: 0.5286380649, green: 0.9115514159, blue: 0.5707022548, alpha: 1)),
-								  location: 0.1),
-							.init(color: Color(#colorLiteral(red: 0.5286380649, green: 0.9115514159, blue: 0.5707022548, alpha: 1)),
-								  location: 0.9),
-							.init(color: Color(#colorLiteral(red: 0.1636346579, green: 0.5416366458, blue: 0.08888492733, alpha: 1)),
-								  location: 0.99999)
-						]),
-						startPoint: .leading,
-						endPoint: .trailing
-					), flatGradient: LinearGradient(gradient: Gradient(colors: [.white, Color(#colorLiteral(red: 0.5279352069, green: 0.9114217162, blue: 0.5712119341, alpha: 0.7654180464))]), startPoint: .top, endPoint: .bottom)))
-					.onAppear {
-						withAnimation(.easeInOut(duration: 2)) {
-							value = 1.1
-						}
-					}
-				}
+                        )
+                    }
+                    .padding([.leading, .bottom, .trailing], 20.0)
+                    .frame(width: 332, height: 75)
+                    .tint(.green)
+                    .buttonStyle(threeDimensionalButton(lateralGradient: LinearGradient(
+                        gradient: Gradient(stops: [
+                            .init(color: .init(red: 0.3, green: 0.5, blue: 0.9),
+                                  location: 0.00001),
+                            .init(color: .init(red: 0.484, green: 0.7, blue: 1),
+                                  location: 0.1),
+                            .init(color: .init(red: 0.484, green: 0.7, blue: 1),
+                                  location: 0.9),
+                            .init(color: .init(red: 0.3, green: 0.5, blue: 0.9),
+                                  location: 0.99999)
+                        ]),
+                        startPoint: .leading,
+                        endPoint: .trailing
+                    ), flatGradient: LinearGradient(gradient: Gradient(colors: [.white,.init(red: 0.584, green: 0.749, blue: 1)]), startPoint: .top, endPoint: .bottom)))
+                    .onAppear {
+                        withAnimation(.easeInOut(duration: 2)) {
+                            value = 1.1
+                        }
+                    }
+                    HStack{
+                        Image(systemName: "mail.fill")
+                            .foregroundStyle(.white)
+                        Text("We do not send spam or promotional notifications.")
+                            .underline()
+                            .shadow(color: .black, radius: 10)
+                            .minimumScaleFactor(0.5)
+                            .lineLimit(1)
+                            .foregroundColor(.white)
+                    }
+                }
 				.padding()
 				.tag(2)
 				VStack{
