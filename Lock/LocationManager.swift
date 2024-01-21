@@ -47,6 +47,7 @@ class LocationDataManager : NSObject, ObservableObject, CLLocationManagerDelegat
 		default:
 			break
 		}
+        objectWillChange.send()
 	}
 	
 	func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
