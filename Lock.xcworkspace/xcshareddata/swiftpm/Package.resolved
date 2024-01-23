@@ -14,8 +14,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/sparrowcode/PermissionsKit",
       "state" : {
-        "revision" : "d10e48fb51a49b1a8db2a814ff7f7353415b72a3",
-        "version" : "9.0.5"
+        "revision" : "a54806370a4b9e5d3bd2e61c9d570462c8f7d835",
+        "version" : "9.2.2"
       }
     },
     {
@@ -23,8 +23,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/alessiorubicini/SFSymbolsPicker",
       "state" : {
-        "revision" : "0ec27c0d3e4b3cc2d02fc9b6c841222be1913d34",
-        "version" : "1.0.1"
+        "revision" : "336e6f59e83dc759703aa80ab7826df9d281233c",
+        "version" : "1.0.4"
       }
     },
     {

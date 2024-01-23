@@ -164,6 +164,8 @@ struct AddSpotView: View {
                         dismiss()
                     }
                     .disabled(spotName.isEmpty || locationaddress.isEmpty)
+                    .opacity(spotName.isEmpty || locationaddress.isEmpty ? 0.4 : 1)
+                    .foregroundStyle(spotName.isEmpty || locationaddress.isEmpty ? Color.gray : Color.clear)
                     .buttonStyle(threeDimensionalButton(lateralGradient: LinearGradient(
                         gradient: Gradient(stops: [
                             .init(color: .init(red: 0.3, green: 0.5, blue: 0.9),
@@ -195,7 +197,31 @@ struct AddSpotView: View {
                 
                 
             }
-            
+            .toolbar {
+                            ToolbarItem(placement: .cancellationAction) {
+                                Button("Cancel") {
+                                    dismiss()
+                                }
+                            }
+                            
+                            ToolbarItem(placement: .confirmationAction) {
+                                Button("Save") {
+                                    let newSpot = Spots(context: moc)
+                                    newSpot.id = UUID()
+                                    newSpot.nameOfLocation = spotName
+                                    newSpot.notifyOnBoth = notifyOnBoth
+                                    newSpot.address = locationaddress
+                                    newSpot.distanceFromSpot = Int16(notifyMeters)
+                                    newSpot.customNotificationTitle = notificationTitle
+                                    newSpot.customNotificationBody = notificationBody
+                                    newSpot.longitude = location!.longitude
+                                    newSpot.latitude = location!.latitude
+                                    try? moc.save()
+                                    dismiss()
+                                }
+                                .disabled(spotName.isEmpty || locationaddress.isEmpty)
+                            }
+                        }
             .listStyle(InsetGroupedListStyle())
             .navigationTitle("Spot Details")
             

@@ -144,6 +144,8 @@ struct EditSpotView: View {
 						dismiss()
 					}
 					.disabled(spotName.isEmpty || locationaddress.isEmpty)
+                    .opacity(spotName.isEmpty || locationaddress.isEmpty ? 0.4 : 1)
+                    .foregroundStyle(spotName.isEmpty || locationaddress.isEmpty ? Color.gray : Color.clear)
 					.buttonStyle(threeDimensionalButton(lateralGradient: LinearGradient(
 						gradient: Gradient(stops: [
 							.init(color: .init(red: 0.3, green: 0.5, blue: 0.9),
@@ -184,7 +186,6 @@ struct EditSpotView: View {
 				
 				
 			}
-			
 			.listStyle(InsetGroupedListStyle())
 			.navigationTitle("Edit Spot Details")
 			
