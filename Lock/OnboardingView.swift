@@ -1,3 +1,4 @@
+/// Copyright © 2025 Vaibhav Satishkumar. All rights reserved.
 //
 //  OnboardingView.swift
 //  Lock
@@ -7,7 +8,6 @@
 
 import SwiftUI
 import CoreLocation
-import LocationAlwaysPermission
 import NotificationPermission
 import UserNotifications
 import PermissionsKit
@@ -18,32 +18,25 @@ struct OnboardingView: View {
     @State var showingAlert2 = false
 	@AppStorage("shouldShowOnboarding") var dontShowOnboarding : Bool = false
 	@AppStorage("fadeInOut") public var fadeInOut : Bool = false
-	@StateObject var locationDataManager = LocationPermission()
+	@StateObject var locationDataManager = LocationDataManager()
 	@State private var value = 1.0
 	@State private var canTouchDown = true
 	let impact = UIImpactFeedbackGenerator(style: .medium)
 	@State private var selectedPage = 0
-	@State private var isLocationAuthorized = false
-	private let locationManager = CLLocationManager()
-	func locationManagerDidChangeAuthorization(_ manager: CLLocationManager) {
-		switch manager.authorizationStatus {
-		case .authorizedWhenInUse:  // Location services are available.
-			break
-		case .restricted, .denied:  // Location services currently unavailable.
-			break
-		case .notDetermined:        // Authorization not determined yet.
-			manager.requestAlwaysAuthorization()
-			break
-		default:
-			break
-		}
-	}
+	
+	// Clean location permission tracking
+	@State private var locationAuthStatus: CLAuthorizationStatus = .notDetermined
+	@State private var locationManager = CLLocationManager()
+	@State private var locationButtonText: String = "Enable"
+	@State private var notificationButtonText: String = "Enable"
+
 	let coolView = AuroraView()
+	
 	var body: some View {
 		ZStack{
 			coolView
 			TabView(selection: $selectedPage, content: {
-				VStack() {
+				VStack() { // Welcome Page - Tag 0
 					VStack{
 						@ObservedObject var manager = MotionManager()
 						ParallaxView()
@@ -91,9 +84,10 @@ struct OnboardingView: View {
 					.padding()
 				}
 				.tag(0)
-				VStack {
+
+				VStack { // Location Permission Page - Tag 1
 					VStack{
-						@ObservedObject var manager = MotionManager()
+						@ObservedObject var manager = MotionManager() // Assuming a new instance or pass one
 						Image("location")
 							.resizable()
 							.cornerRadius(30)
@@ -115,32 +109,24 @@ struct OnboardingView: View {
 							.padding(.horizontal, 20)
 						Spacer()
                         Button(action: {
-							let authorized = Permission.locationAlways.authorized
-							Permission.locationAlways.request {
-								locationManager.stopUpdatingLocation()
-							}
-							let key = Permission.locationAlways.usageDescriptionKey
-                            print(key!)
-							if !authorized {
-								showingAlert = true
-                            } else {
-                                withAnimation(Animation.spring().delay(2)) { selectedPage += 1
-                                }
-                            }
+                            handleLocationButtonTap()
                         }){
                             HStack{
-                                Text("Enable")
-                                Image(systemName: "bell.badge.fill")
+                                Text(locationButtonText)
+                                if locationButtonText == "Enable" {
+                                    Image(systemName: "location.fill")
+                                }
                             }
                         }.alert(isPresented: $showingAlert) {
                             Alert(
                                 title: Text("Always Location Permission Required"),
-                                message: Text("Please enable the \"Always\" location permissions in settings so that this app can work even when it is not opened.."),
-                                dismissButton: .default(Text("Enable in Settings"), action: {
+                                message: Text("Please enable the \"Always\" location permissions in settings so that this app can work even when it is not opened."),
+                                primaryButton: .default(Text("Enable in Settings"), action: {
                                     if let url = URL(string: UIApplication.openSettingsURLString) {
                                         UIApplication.shared.open(url, options: [:], completionHandler: nil)
                                     }
-                                })
+                                }),
+                                secondaryButton: .cancel()
                             )
                         }
 						.padding([.leading, .bottom, .trailing], 20.0)
@@ -160,11 +146,15 @@ struct OnboardingView: View {
                             endPoint: .trailing
                         ), flatGradient: LinearGradient(gradient: Gradient(colors: [.white,.init(red: 0.584, green: 0.749, blue: 1)]), startPoint: .top, endPoint: .bottom)))
 						.onAppear {
+                            checkLocationPermissionStatus()
 							withAnimation(.easeInOut(duration: 2)) {
-								value = 1.1
+								value = 1.1 // Assuming 'value' is for an animation
 							}
 						}
-                        Button(action: {
+                        .onReceive(NotificationCenter.default.publisher(for: UIApplication.willEnterForegroundNotification)) { _ in
+                            checkLocationPermissionStatus()
+                        }
+                        Button(action: { // Privacy Policy Button
                                     guard let url = URL(string: "https://sites.google.com/view/lock-reminder/privacy-policy") else { return }
                                     UIApplication.shared.open(url)
                                 }) {
@@ -183,8 +173,9 @@ struct OnboardingView: View {
 					.padding()
 				}
 				.tag(1)
-                VStack{
-                    @ObservedObject var manager = MotionManager()
+
+                VStack{ // Notification Permission Page - Tag 2
+                    @ObservedObject var manager = MotionManager() // Assuming a new instance or pass one
                     Image("notification")
                         .resizable()
                         .foregroundColor(.red)
@@ -207,19 +198,28 @@ struct OnboardingView: View {
                         .padding(.horizontal, 20)
                     Spacer()
                     Button(action: {
-                        let authorized = Permission.notification.authorized
-                        Permission.notification.request {
-                        }
-                        if !authorized {
-                            showingAlert1 = true
+                        if notificationButtonText == "Continue" {
+                            withAnimation(Animation.spring().delay(0.2)) {
+                                selectedPage += 1
+                            }
                         } else {
-                            withAnimation(Animation.spring().delay(2)) { selectedPage += 1
+                            Permission.notification.request { // Using PermissionsKit for notifications
+                                DispatchQueue.main.async {
+                                    if Permission.notification.authorized {
+                                        notificationButtonText = "Continue"
+                                    } else {
+                                        notificationButtonText = "Enable"
+                                        showingAlert1 = true
+                                    }
+                                }
                             }
                         }
                     }){
                         HStack {
-                            Text("Enable")
-                            Image(systemName: "bell.badge.fill")
+                            Text(notificationButtonText)
+                            if notificationButtonText == "Enable" { // Conditional icon
+                                Image(systemName: "bell.badge.fill")
+                            }
                         }
                     }.alert(isPresented: $showingAlert1) {
                         Alert(
@@ -250,8 +250,20 @@ struct OnboardingView: View {
                         endPoint: .trailing
                     ), flatGradient: LinearGradient(gradient: Gradient(colors: [.white,.init(red: 0.584, green: 0.749, blue: 1)]), startPoint: .top, endPoint: .bottom)))
                     .onAppear {
+                        if Permission.notification.authorized {
+                            notificationButtonText = "Continue"
+                        } else {
+                            notificationButtonText = "Enable"
+                        }
                         withAnimation(.easeInOut(duration: 2)) {
                             value = 1.1
+                        }
+                    }
+                    .onReceive(NotificationCenter.default.publisher(for: UIApplication.willEnterForegroundNotification)) { _ in
+                        if Permission.notification.authorized {
+                            notificationButtonText = "Continue"
+                        } else {
+                            notificationButtonText = "Enable"
                         }
                     }
                     HStack{
@@ -267,8 +279,9 @@ struct OnboardingView: View {
                 }
 				.padding()
 				.tag(2)
-				VStack{
-					@ObservedObject var manager = MotionManager()
+
+				VStack{ // Setup Complete Page - Tag 3
+					@ObservedObject var manager = MotionManager() // Assuming a new instance or pass one
 					Image("LockReminderHappyFace")
 						.resizable()
 						.foregroundColor(.white)
@@ -292,10 +305,8 @@ struct OnboardingView: View {
 						.padding(.horizontal, 20)
 					Spacer()
 					Button("Dismiss"){
-                        if Permission.notification.authorized && Permission.locationAlways.authorized{
+                        if locationAuthStatus == .authorizedAlways && Permission.notification.authorized {
                             dontShowOnboarding = true
-                            self
-                                .opacity(1)
                         } else {
                             showingAlert2 = true
                         }
@@ -306,7 +317,7 @@ struct OnboardingView: View {
                             message: Text("To receive reminders, you must enable notificications, and you must enable \"Always\" location."),
                             dismissButton: .default(Text("Enable in Settings"), action: {
                                 if let url = URL(string: UIApplication.openSettingsURLString) {
-                                    UIApplication.shared.open(url, options: [:], completionHandler: nil)
+                                    UIApplication.shared.open(url)
                                 }
                             })
                         )
@@ -341,7 +352,79 @@ struct OnboardingView: View {
 			.edgesIgnoringSafeArea(.all)
 		}
 	}
+	
+	// MARK: - Location Permission Methods
+	
+	private func checkLocationPermissionStatus() {
+		locationAuthStatus = locationManager.authorizationStatus
+		updateLocationButtonText()
+		print("Location status checked: \(locationAuthStatus)")
+	}
+	
+	private func updateLocationButtonText() {
+		if locationAuthStatus == .authorizedAlways {
+			locationButtonText = "Continue"
+		} else {
+			locationButtonText = "Enable"
+		}
+	}
+	
+	private func handleLocationButtonTap() {
+		print("Location button tapped. Current status: \(locationAuthStatus)")
+		
+		if locationAuthStatus == .authorizedAlways {
+			// User has Always permission, proceed to next page
+			withAnimation(Animation.spring().delay(0.2)) {
+				selectedPage += 1
+			}
+		} else if locationAuthStatus == .notDetermined {
+			// First time asking for permission
+			requestLocationPermission()
+		} else {
+			// User has denied or only granted "When In Use" - show settings alert
+			showingAlert = true
+		}
+	}
+	
+	private func requestLocationPermission() {
+		// Use a simple delegate-based approach
+		LocationPermissionDelegate.shared.requestAlwaysLocationPermission { [self] status in
+			DispatchQueue.main.async {
+				self.locationAuthStatus = status
+				self.updateLocationButtonText()
+				
+				// If not Always permission after request, show alert
+				if status != .authorizedAlways && status != .notDetermined {
+					self.showingAlert = true
+				}
+			}
+		}
+	}
 }
+
+// MARK: - Simple Location Permission Helper
+
+class LocationPermissionDelegate: NSObject, CLLocationManagerDelegate {
+	static let shared = LocationPermissionDelegate()
+	private let locationManager = CLLocationManager()
+	private var completion: ((CLAuthorizationStatus) -> Void)?
+	
+	override init() {
+		super.init()
+		locationManager.delegate = self
+	}
+	
+	func requestAlwaysLocationPermission(completion: @escaping (CLAuthorizationStatus) -> Void) {
+		self.completion = completion
+		locationManager.requestAlwaysAuthorization()
+	}
+	
+	func locationManagerDidChangeAuthorization(_ manager: CLLocationManager) {
+		completion?(manager.authorizationStatus)
+		completion = nil // Clear completion to avoid multiple calls
+	}
+}
+
 struct OnboardingView_Previews: PreviewProvider {
     static var previews: some View {
         OnboardingView()

@@ -1,3 +1,4 @@
+/// Copyright © 2025 Vaibhav Satishkumar. All rights reserved.
 //
 //  LockApp.swift
 //  Lock
@@ -10,32 +11,12 @@ import CoreData
 
 @main
 struct LockApp: App {
-	@AppStorage("shouldShowOnboarding") public var dontShowOnboarding : Bool = false
-    
     @StateObject private var dataController = DataController()
-	
-	
-	
 	
 	var body: some Scene {
 		WindowGroup {
-			
-			if dontShowOnboarding{
-				ContentView()
-					.environment(\.managedObjectContext, dataController.container.viewContext)
-					.onAppear(){
-						withAnimation(Animation
-									  
-							.easeInOut(duration: 3)) {
-								dontShowOnboarding = true
-							}
-						
-					}
-					.opacity(dontShowOnboarding ? 1 : 0)
-				
-			} else {
-				OnboardingView()
-			}
+			ContentView()
+				.environment(\.managedObjectContext, dataController.container.viewContext)
 		}
 	}
 }

@@ -1,4 +1,5 @@
 {
+  "originHash" : "b945ae04597fde04611e3e9cd6c7b1b0872416af82ff1f766fdbb54513b32291",
   "pins" : [
     {
       "identity" : "emojipicker",
@@ -16,6 +17,15 @@
       "state" : {
         "revision" : "a54806370a4b9e5d3bd2e61c9d570462c8f7d835",
         "version" : "9.2.2"
+      }
+    },
+    {
+      "identity" : "setting",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/aheze/Setting",
+      "state" : {
+        "revision" : "f506b13b2024fc3e7585b6e4f8290f6f1525127c",
+        "version" : "1.0.1"
       }
     },
     {
@@ -37,5 +47,5 @@
       }
     }
   ],
-  "version" : 2
+  "version" : 3
 }

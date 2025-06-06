@@ -21,18 +21,16 @@
 		78619F8A29F8ED320034DC5D /* AuraView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 78619F8929F8ED320034DC5D /* AuraView.swift */; };
 		78619F8F29F97E230034DC5D /* fontDefault-thin.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 78619F8D29F97C5D0034DC5D /* fontDefault-thin.ttf */; };
 		78761E2A2A6F2CEF00A50B7D /* LocationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 78761E292A6F2CEF00A50B7D /* LocationManager.swift */; };
+		78B54E4D2DF27F67003598CA /* NotificationDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 78B54E4C2DF27F67003598CA /* NotificationDelegate.swift */; };
+		78B54E502DF2BA78003598CA /* Setting in Frameworks */ = {isa = PBXBuildFile; productRef = 78B54E4F2DF2BA78003598CA /* Setting */; };
 		78D7A02D29F8985100660C56 /* LockApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 78D7A02C29F8985100660C56 /* LockApp.swift */; };
 		78D7A02F29F8985100660C56 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 78D7A02E29F8985100660C56 /* ContentView.swift */; };
 		78D7A03129F8985300660C56 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 78D7A03029F8985300660C56 /* Assets.xcassets */; };
 		78D7A03429F8985300660C56 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 78D7A03329F8985300660C56 /* Preview Assets.xcassets */; };
-		78D7A03E29F8985300660C56 /* LockTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 78D7A03D29F8985300660C56 /* LockTests.swift */; };
-		78D7A04829F8985400660C56 /* LockUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 78D7A04729F8985400660C56 /* LockUITests.swift */; };
-		78D7A04A29F8985400660C56 /* LockUITestsLaunchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 78D7A04929F8985400660C56 /* LockUITestsLaunchTests.swift */; };
 		78D7A05929F89BA400660C56 /* threeDimensionalButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 78D7A05829F89BA400660C56 /* threeDimensionalButton.swift */; };
 		78EA52402A2BB5DF00E2B820 /* ParallaxView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 78EA523F2A2BB5DF00E2B820 /* ParallaxView.swift */; };
 		78F006CD2A22CF2D00EC843E /* DataController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 78318E352A0F408A003681AF /* DataController.swift */; };
 		78F99CFB2A466CDA00FF1462 /* OnboardingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 78F99CFA2A466CDA00FF1462 /* OnboardingView.swift */; };
-		78F99CFE2A46A10F00FF1462 /* LocationDataManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 78F99CFD2A46A10F00FF1462 /* LocationDataManager.swift */; };
 		78F99D012A476DB100FF1462 /* LocationAlwaysPermission in Frameworks */ = {isa = PBXBuildFile; productRef = 78F99D002A476DB100FF1462 /* LocationAlwaysPermission */; };
 		78F99D032A476DB100FF1462 /* LocationWhenInUsePermission in Frameworks */ = {isa = PBXBuildFile; productRef = 78F99D022A476DB100FF1462 /* LocationWhenInUsePermission */; };
 		78F99D052A476DB100FF1462 /* NotificationPermission in Frameworks */ = {isa = PBXBuildFile; productRef = 78F99D042A476DB100FF1462 /* NotificationPermission */; };
@@ -74,22 +72,18 @@
 		78619F8929F8ED320034DC5D /* AuraView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuraView.swift; sourceTree = "<group>"; };
 		78619F8C29F97C2F0034DC5D /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		78619F8D29F97C5D0034DC5D /* fontDefault-thin.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "fontDefault-thin.ttf"; sourceTree = "<group>"; };
-		78619F9029F9F1600034DC5D /* fontDefault.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = fontDefault.ttf; path = ../../../Downloads/Nunito/static/fontDefault.ttf; sourceTree = "<group>"; };
 		78761E292A6F2CEF00A50B7D /* LocationManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationManager.swift; sourceTree = "<group>"; };
+		78B54E4C2DF27F67003598CA /* NotificationDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationDelegate.swift; sourceTree = "<group>"; };
 		78D7A02929F8985100660C56 /* Lock.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Lock.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		78D7A02C29F8985100660C56 /* LockApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LockApp.swift; sourceTree = "<group>"; };
 		78D7A02E29F8985100660C56 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		78D7A03029F8985300660C56 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		78D7A03329F8985300660C56 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		78D7A03929F8985300660C56 /* LockTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = LockTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		78D7A03D29F8985300660C56 /* LockTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LockTests.swift; sourceTree = "<group>"; };
 		78D7A04329F8985400660C56 /* LockUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = LockUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		78D7A04729F8985400660C56 /* LockUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LockUITests.swift; sourceTree = "<group>"; };
-		78D7A04929F8985400660C56 /* LockUITestsLaunchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LockUITestsLaunchTests.swift; sourceTree = "<group>"; };
 		78D7A05829F89BA400660C56 /* threeDimensionalButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = threeDimensionalButton.swift; sourceTree = "<group>"; };
 		78EA523F2A2BB5DF00E2B820 /* ParallaxView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ParallaxView.swift; sourceTree = "<group>"; };
 		78F99CFA2A466CDA00FF1462 /* OnboardingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingView.swift; sourceTree = "<group>"; };
-		78F99CFD2A46A10F00FF1462 /* LocationDataManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationDataManager.swift; sourceTree = "<group>"; };
 		8AE07B260B78E8865F7DEC15 /* Pods-Lock-LockUITests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Lock-LockUITests.release.xcconfig"; path = "Target Support Files/Pods-Lock-LockUITests/Pods-Lock-LockUITests.release.xcconfig"; sourceTree = "<group>"; };
 		9559A177BFD359F9A7378A68 /* Pods_Lock.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Lock.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		BA1D51EC83AEE9299A33D6A5 /* Pods_LockTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_LockTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -102,6 +96,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				78B54E502DF2BA78003598CA /* Setting in Frameworks */,
 				78F99D032A476DB100FF1462 /* LocationWhenInUsePermission in Frameworks */,
 				781F3B562A3FA6D200E346F1 /* EmojiPicker in Frameworks */,
 				D8A1BB7000EABCBAA6AC8E7F /* Pods_Lock.framework in Frameworks */,
@@ -147,8 +142,6 @@
 			isa = PBXGroup;
 			children = (
 				78D7A02B29F8985100660C56 /* Lock */,
-				78D7A03C29F8985300660C56 /* LockTests */,
-				78D7A04629F8985400660C56 /* LockUITests */,
 				78D7A02A29F8985100660C56 /* Products */,
 				5738CDF077C18E609778EA0A /* Pods */,
 				A575B2B29D70D334D66CB39F /* Frameworks */,
@@ -168,10 +161,10 @@
 		78D7A02B29F8985100660C56 /* Lock */ = {
 			isa = PBXGroup;
 			children = (
+				78B54E4C2DF27F67003598CA /* NotificationDelegate.swift */,
 				78761E292A6F2CEF00A50B7D /* LocationManager.swift */,
 				78619F8C29F97C2F0034DC5D /* Info.plist */,
 				78F99CFA2A466CDA00FF1462 /* OnboardingView.swift */,
-				78F99CFD2A46A10F00FF1462 /* LocationDataManager.swift */,
 				78EA523F2A2BB5DF00E2B820 /* ParallaxView.swift */,
 				781AE96B2A358FB0007B4F2F /* SpotBrowser.swift */,
 				781AE9742A37FA22007B4F2F /* EditSpotView.swift */,
@@ -185,7 +178,6 @@
 				7841A56229FEF27100DEFFB1 /* Parallax.swift */,
 				78619F8929F8ED320034DC5D /* AuraView.swift */,
 				78619F8D29F97C5D0034DC5D /* fontDefault-thin.ttf */,
-				78619F9029F9F1600034DC5D /* fontDefault.ttf */,
 				78D7A03029F8985300660C56 /* Assets.xcassets */,
 				78D7A03229F8985300660C56 /* Preview Content */,
 				78318E322A0CC11A003681AF /* Model.xcdatamodeld */,
@@ -200,23 +192,6 @@
 				78D7A03329F8985300660C56 /* Preview Assets.xcassets */,
 			);
 			path = "Preview Content";
-			sourceTree = "<group>";
-		};
-		78D7A03C29F8985300660C56 /* LockTests */ = {
-			isa = PBXGroup;
-			children = (
-				78D7A03D29F8985300660C56 /* LockTests.swift */,
-			);
-			path = LockTests;
-			sourceTree = "<group>";
-		};
-		78D7A04629F8985400660C56 /* LockUITests */ = {
-			isa = PBXGroup;
-			children = (
-				78D7A04729F8985400660C56 /* LockUITests.swift */,
-				78D7A04929F8985400660C56 /* LockUITestsLaunchTests.swift */,
-			);
-			path = LockUITests;
 			sourceTree = "<group>";
 		};
 		A575B2B29D70D334D66CB39F /* Frameworks */ = {
@@ -252,6 +227,7 @@
 				78F99D002A476DB100FF1462 /* LocationAlwaysPermission */,
 				78F99D022A476DB100FF1462 /* LocationWhenInUsePermission */,
 				78F99D042A476DB100FF1462 /* NotificationPermission */,
+				78B54E4F2DF2BA78003598CA /* Setting */,
 			);
 			productName = Lock;
 			productReference = 78D7A02929F8985100660C56 /* Lock.app */;
@@ -331,6 +307,7 @@
 				781F3B512A3F957500E346F1 /* XCRemoteSwiftPackageReference "SFSymbolsPicker" */,
 				781F3B542A3FA6D200E346F1 /* XCRemoteSwiftPackageReference "EmojiPicker" */,
 				78F99CFF2A476DB100FF1462 /* XCRemoteSwiftPackageReference "PermissionsKit" */,
+				78B54E4E2DF2BA78003598CA /* XCRemoteSwiftPackageReference "Setting" */,
 			);
 			productRefGroup = 78D7A02A29F8985100660C56 /* Products */;
 			projectDirPath = "";
@@ -447,10 +424,10 @@
 				78D7A02F29F8985100660C56 /* ContentView.swift in Sources */,
 				78761E2A2A6F2CEF00A50B7D /* LocationManager.swift in Sources */,
 				78619F8A29F8ED320034DC5D /* AuraView.swift in Sources */,
-				78F99CFE2A46A10F00FF1462 /* LocationDataManager.swift in Sources */,
 				781AE9722A35906D007B4F2F /* Settings.swift in Sources */,
 				78F99CFB2A466CDA00FF1462 /* OnboardingView.swift in Sources */,
 				78D7A02D29F8985100660C56 /* LockApp.swift in Sources */,
+				78B54E4D2DF27F67003598CA /* NotificationDelegate.swift in Sources */,
 				78D7A05929F89BA400660C56 /* threeDimensionalButton.swift in Sources */,
 				781AE9702A358FEA007B4F2F /* SpotNotificationLogger.swift in Sources */,
 				781AE96E2A358FDB007B4F2F /* InfoTab.swift in Sources */,
@@ -468,7 +445,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				78D7A03E29F8985300660C56 /* LockTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -476,8 +452,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				78D7A04829F8985400660C56 /* LockUITests.swift in Sources */,
-				78D7A04A29F8985400660C56 /* LockUITestsLaunchTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -624,11 +598,14 @@
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = Lock/Info.plist;
+				INFOPLIST_KEY_NSLocationAlwaysAndWhenInUseUsageDescription = "Enable location so we can detect when you have left your desired location.";
+				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "Enable location so we can detect when you have left your desired location.";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationLandscapeRight UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
+				IPHONEOS_DEPLOYMENT_TARGET = 17.6;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -658,11 +635,14 @@
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = Lock/Info.plist;
+				INFOPLIST_KEY_NSLocationAlwaysAndWhenInUseUsageDescription = "Enable location so we can detect when you have left your desired location.";
+				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "Enable location so we can detect when you have left your desired location.";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationLandscapeRight UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
+				IPHONEOS_DEPLOYMENT_TARGET = 17.6;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -683,7 +663,6 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 5E9378A1081D583A0DBEFE1C /* Pods-LockTests.debug.xcconfig */;
 			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
@@ -704,7 +683,6 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 17D766C0E5A2AEE2BCFF13E5 /* Pods-LockTests.release.xcconfig */;
 			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
@@ -725,7 +703,6 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 63BC3F2F4393A8FDF2731C37 /* Pods-Lock-LockUITests.debug.xcconfig */;
 			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = SU5789R8HD;
@@ -744,7 +721,6 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 8AE07B260B78E8865F7DEC15 /* Pods-Lock-LockUITests.release.xcconfig */;
 			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = SU5789R8HD;
@@ -817,6 +793,14 @@
 				minimumVersion = 1.0.0;
 			};
 		};
+		78B54E4E2DF2BA78003598CA /* XCRemoteSwiftPackageReference "Setting" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/aheze/Setting";
+			requirement = {
+				kind = exactVersion;
+				version = 1.0.1;
+			};
+		};
 		78F99CFF2A476DB100FF1462 /* XCRemoteSwiftPackageReference "PermissionsKit" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/sparrowcode/PermissionsKit";
@@ -837,6 +821,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 781F3B542A3FA6D200E346F1 /* XCRemoteSwiftPackageReference "EmojiPicker" */;
 			productName = EmojiPicker;
+		};
+		78B54E4F2DF2BA78003598CA /* Setting */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 78B54E4E2DF2BA78003598CA /* XCRemoteSwiftPackageReference "Setting" */;
+			productName = Setting;
 		};
 		78F99D002A476DB100FF1462 /* LocationAlwaysPermission */ = {
 			isa = XCSwiftPackageProductDependency;

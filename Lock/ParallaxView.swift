@@ -1,3 +1,4 @@
+/// Copyright © 2025 Vaibhav Satishkumar. All rights reserved.
 //
 //  ParallaxView.swift
 //  Lock

@@ -1,3 +1,4 @@
+/// Copyright © 2025 Vaibhav Satishkumar. All rights reserved.
 //
 //  AddSpotView.swift
 //  Lock
@@ -17,6 +18,9 @@ struct AddSpotView: View {
     @Environment(\.managedObjectContext) var moc
     @Environment(\.dismiss) var dismiss
     
+    // Add LocationDataManager to start monitoring
+    @StateObject private var locationManager = LocationDataManager()
+    
     let geocoder = CLGeocoder()
     @State private var notificationTitle = ""
     @State private var notificationBody = ""
@@ -27,14 +31,35 @@ struct AddSpotView: View {
     @State private var region = MKCoordinateRegion(center: CLLocationCoordinate2D(latitude: 0, longitude: 0), span: MKCoordinateSpan(latitudeDelta: 0.0003, longitudeDelta: 0.0003))
     @State var notifyMeters = Float(50)
     @State private var location: CLLocationCoordinate2D?
+    @State private var isUserInteractingWithMap = false
+    @State private var geocodingWorkItem: DispatchWorkItem?
     func getLocation(from address: Binding<String>, completion: @escaping (_ location: CLLocationCoordinate2D?)-> Void) {
         let geocoder = CLGeocoder()
+        print("🗺️ Geocoding address: '\(address.wrappedValue)'")
+        
         geocoder.geocodeAddressString(address.wrappedValue) { (placemarks, error) in
-            guard let placemarks = placemarks,
-                  let location = placemarks.first?.location?.coordinate else {
+            if let error = error {
+                print("❌ Geocoding error: \(error.localizedDescription)")
                 completion(nil)
                 return
             }
+            
+            guard let placemarks = placemarks, !placemarks.isEmpty else {
+                print("❌ No placemarks found for address: '\(address.wrappedValue)'")
+                completion(nil)
+                return
+            }
+            
+            guard let location = placemarks.first?.location?.coordinate else {
+                print("❌ No coordinate found in placemarks")
+                completion(nil)
+                return
+            }
+            
+            print("✅ Geocoding successful:")
+            print("   Address: '\(address.wrappedValue)'")
+            print("   Latitude: \(location.latitude)")
+            print("   Longitude: \(location.longitude)")
             completion(location)
         }
     }
@@ -83,15 +108,24 @@ struct AddSpotView: View {
                                 .foregroundColor(.red)
                         }
                         
-                        Map(coordinateRegion: $region, annotationItems: [
-                            Location(coordinate: location ?? CLLocationCoordinate2D(latitude: 0, longitude: 0))
+                        Map(coordinateRegion: .constant(region), annotationItems: [
+                            MapLocation(coordinate: location ?? CLLocationCoordinate2D(latitude: 0, longitude: 0))
                         ],
-                            annotationContent: { locations in
+                            annotationContent: { mapLocation in
                             
-                            MapMarker(coordinate: location ?? CLLocationCoordinate2D(latitude: 0, longitude: 0),  tint: Color.purple)
+                            MapMarker(coordinate: mapLocation.coordinate, tint: Color.purple)
                             
                         })
-                        
+                        .onReceive(NotificationCenter.default.publisher(for: UIResponder.keyboardWillShowNotification)) { _ in
+                            // Prevent map updates when keyboard appears
+                            isUserInteractingWithMap = true
+                        }
+                        .onReceive(NotificationCenter.default.publisher(for: UIResponder.keyboardWillHideNotification)) { _ in
+                            // Allow map updates when keyboard disappears
+                            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+                                isUserInteractingWithMap = false
+                            }
+                        }
                         .scaledToFill()
                         .cornerRadius(9)
                         .listRowInsets(EdgeInsets())
@@ -150,6 +184,24 @@ struct AddSpotView: View {
                 
                 Section {
                     Button("Save"){
+                        guard let location = location else { 
+                            print("❌ No location available for saving")
+                            return 
+                        }
+                        
+                        // Add validation for valid coordinates
+                        guard location.latitude != 0.0 && location.longitude != 0.0 else {
+                            print("❌ Invalid coordinates (0,0) - cannot save spot")
+                            return
+                        }
+                        
+                        print("💾 Saving spot with coordinates:")
+                        print("   Name: \(spotName)")
+                        print("   Address: \(locationaddress)")
+                        print("   Latitude: \(location.latitude)")
+                        print("   Longitude: \(location.longitude)")
+                        print("   Distance: \(notifyMeters)")
+                        
                         let newSpot = Spots(context: moc)
                         newSpot.id = UUID()
                         newSpot.nameOfLocation = spotName
@@ -158,14 +210,29 @@ struct AddSpotView: View {
                         newSpot.distanceFromSpot = Int16(notifyMeters)
                         newSpot.customNotificationTitle = notificationTitle
                         newSpot.customNotificationBody = notificationBody
-                        newSpot.longitude = location!.longitude
-                        newSpot.latitude = location!.latitude
-                        try? moc.save()
+                        newSpot.longitude = location.longitude
+                        newSpot.latitude = location.latitude
+                        
+                        print("📝 Spot data set:")
+                        print("   ID: \(newSpot.id?.uuidString ?? "No ID")")
+                        print("   Saved Latitude: \(newSpot.latitude)")
+                        print("   Saved Longitude: \(newSpot.longitude)")
+                        
+                        // Start monitoring this location
+                        let coordinate = CLLocationCoordinate2D(latitude: location.latitude, longitude: location.longitude)
+                        locationManager.monitorRegionAtLocation(center: coordinate, identifier: newSpot.id!.uuidString)
+                        
+                        do {
+                            try moc.save()
+                            print("✅ Spot saved successfully")
+                        } catch {
+                            print("❌ Error saving spot: \(error)")
+                        }
                         dismiss()
                     }
-                    .disabled(spotName.isEmpty || locationaddress.isEmpty)
-                    .opacity(spotName.isEmpty || locationaddress.isEmpty ? 0.4 : 1)
-                    .foregroundStyle(spotName.isEmpty || locationaddress.isEmpty ? Color.gray : Color.clear)
+                    .disabled(spotName.isEmpty || locationaddress.isEmpty || location == nil || (location?.latitude == 0.0 && location?.longitude == 0.0))
+                    .opacity(spotName.isEmpty || locationaddress.isEmpty || location == nil || (location?.latitude == 0.0 && location?.longitude == 0.0) ? 0.4 : 1)
+                    .foregroundStyle(spotName.isEmpty || locationaddress.isEmpty || location == nil || (location?.latitude == 0.0 && location?.longitude == 0.0) ? Color.gray : Color.clear)
                     .buttonStyle(threeDimensionalButton(lateralGradient: LinearGradient(
                         gradient: Gradient(stops: [
                             .init(color: .init(red: 0.3, green: 0.5, blue: 0.9),
@@ -206,6 +273,21 @@ struct AddSpotView: View {
                             
                             ToolbarItem(placement: .confirmationAction) {
                                 Button("Save") {
+                                    guard let location = location else { 
+                                        print("❌ No location available for saving (toolbar)")
+                                        return 
+                                    }
+                                    
+                                    // Add validation for valid coordinates
+                                    guard location.latitude != 0.0 && location.longitude != 0.0 else {
+                                        print("❌ Invalid coordinates (0,0) - cannot save spot (toolbar)")
+                                        return
+                                    }
+                                    
+                                    print("💾 Saving spot via toolbar with coordinates:")
+                                    print("   Latitude: \(location.latitude)")
+                                    print("   Longitude: \(location.longitude)")
+                                    
                                     let newSpot = Spots(context: moc)
                                     newSpot.id = UUID()
                                     newSpot.nameOfLocation = spotName
@@ -214,12 +296,22 @@ struct AddSpotView: View {
                                     newSpot.distanceFromSpot = Int16(notifyMeters)
                                     newSpot.customNotificationTitle = notificationTitle
                                     newSpot.customNotificationBody = notificationBody
-                                    newSpot.longitude = location!.longitude
-                                    newSpot.latitude = location!.latitude
-                                    try? moc.save()
+                                    newSpot.longitude = location.longitude
+                                    newSpot.latitude = location.latitude
+                                    
+                                    // Start monitoring this location
+                                    let coordinate = CLLocationCoordinate2D(latitude: location.latitude, longitude: location.longitude)
+                                    locationManager.monitorRegionAtLocation(center: coordinate, identifier: newSpot.id!.uuidString)
+                                    
+                                    do {
+                                        try moc.save()
+                                        print("✅ Spot saved successfully via toolbar")
+                                    } catch {
+                                        print("❌ Error saving spot via toolbar: \(error)")
+                                    }
                                     dismiss()
                                 }
-                                .disabled(spotName.isEmpty || locationaddress.isEmpty)
+                                .disabled(spotName.isEmpty || locationaddress.isEmpty || location == nil || (location?.latitude == 0.0 && location?.longitude == 0.0))
                             }
                         }
             .listStyle(InsetGroupedListStyle())
@@ -228,14 +320,53 @@ struct AddSpotView: View {
             
         }
         .onChange(of: locationaddress) { newValue in
-            print("submitted")
+            print("📝 Address changed to: '\(newValue)'")
             
-            getLocation(from: $locationaddress) { coordinates in
-                print(coordinates) // Print here
-                location = coordinates ?? CLLocationCoordinate2D(latitude: 0, longitude: 0)// Assign to a local variable for further processing
-                coordinate = "\(coordinates?.latitude ?? 0.0), \(coordinates?.longitude ?? 0.0)"
-                region = MKCoordinateRegion(center: location ?? CLLocationCoordinate2D(latitude: 0, longitude: 0), span: MKCoordinateSpan(latitudeDelta: 0.003, longitudeDelta: 0.003))
+            // Cancel any existing geocoding work
+            geocodingWorkItem?.cancel()
+            
+            // Only geocode if the address is not empty and has reasonable length
+            guard !newValue.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty,
+                  newValue.count > 5 else {
+                print("⚠️ Address too short or empty, skipping geocoding")
+                DispatchQueue.main.async {
+                    self.location = CLLocationCoordinate2D(latitude: 0, longitude: 0)
+                    self.region = MKCoordinateRegion(center: CLLocationCoordinate2D(latitude: 0, longitude: 0), span: MKCoordinateSpan(latitudeDelta: 0.01, longitudeDelta: 0.01))
+                }
+                return
             }
+            
+            // Create new work item with debouncing
+            let workItem = DispatchWorkItem {
+                self.getLocation(from: self.$locationaddress) { coordinates in
+                    DispatchQueue.main.async {
+                        if let coordinates = coordinates {
+                            print("📍 Setting location to: \(coordinates.latitude), \(coordinates.longitude)")
+                            self.location = coordinates
+                            self.coordinate = "\(coordinates.latitude), \(coordinates.longitude)"
+                            
+                            // Always update region when we get valid coordinates
+                            self.region = MKCoordinateRegion(
+                                center: coordinates,
+                                span: MKCoordinateSpan(latitudeDelta: 0.005, longitudeDelta: 0.005)
+                            )
+                            print("📍 Region updated to: \(coordinates)")
+                        } else {
+                            print("❌ Geocoding failed, setting location to 0,0")
+                            self.location = CLLocationCoordinate2D(latitude: 0, longitude: 0)
+                            self.coordinate = "0.0, 0.0"
+                            self.region = MKCoordinateRegion(
+                                center: CLLocationCoordinate2D(latitude: 0, longitude: 0),
+                                span: MKCoordinateSpan(latitudeDelta: 0.01, longitudeDelta: 0.01)
+                            )
+                        }
+                    }
+                }
+            }
+            
+            // Store the work item and execute after delay
+            geocodingWorkItem = workItem
+            DispatchQueue.main.asyncAfter(deadline: .now() + 1.0, execute: workItem)
         }
         
         
@@ -248,7 +379,11 @@ struct AddSpotView_Previews: PreviewProvider {
         
     }
 }
-struct Location: Identifiable {
+//struct Location: Identifiable {
+//    let id = UUID()
+//    let coordinate: CLLocationCoordinate2D
+//}
+struct MapLocation: Identifiable {
     let id = UUID()
     let coordinate: CLLocationCoordinate2D
 }

@@ -1,3 +1,4 @@
+/// Copyright © 2025 Vaibhav Satishkumar. All rights reserved.
 //
 //  Spots+CoreDataProperties.swift
 //  
