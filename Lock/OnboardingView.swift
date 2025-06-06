@@ -155,13 +155,13 @@ struct OnboardingView: View {
                             checkLocationPermissionStatus()
                         }
                         Button(action: { // Privacy Policy Button
-                                    guard let url = URL(string: "https://sites.google.com/view/lock-reminder/privacy-policy") else { return }
+                                    guard let url = URL(string: "https://github.com/Visual-Studio-Coder/Loc-Reminder-SwiftUI/blob/master/PRIVACY.md") else { return }
                                     UIApplication.shared.open(url)
                                 }) {
                                     HStack{
                                         Image(systemName: "lock.fill")
                                             .foregroundStyle(.white)
-                                        Text("We do not collect any data. Click to learn more")
+                                        Text("Loc Reminder does not collect any data. Click to learn more")
                                             .underline()
                                             .shadow(color: .black, radius: 10)
                                             .minimumScaleFactor(0.5)
@@ -269,7 +269,7 @@ struct OnboardingView: View {
                     HStack{
                         Image(systemName: "mail.fill")
                             .foregroundStyle(.white)
-                        Text("We do not send spam or promotional notifications.")
+                        Text("Loc Reminder does not send spam or promotional notifications.")
                             .underline()
                             .shadow(color: .black, radius: 10)
                             .minimumScaleFactor(0.5)
