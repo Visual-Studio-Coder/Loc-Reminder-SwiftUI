@@ -113,6 +113,12 @@ struct InfoTab: View {
                     }
                     
                     Button {
+                        openURL(URL(string: "https://github.com/Visual-Studio-Coder/Loc-Reminder-SwiftUI/blob/master/PRIVACY.md")!)
+                    } label: {
+                        Label("Privacy Policy", systemImage: "hand.raised")
+                    }
+                    
+                    Button {
                         showingAppInfo = true
                     } label: {
                         Label("App Information", systemImage: "info.circle")
