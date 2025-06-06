@@ -43,7 +43,7 @@ struct OnboardingView: View {
 							.scaledToFit()
 							.scaleEffect(value)
 							.frame(width: 400, height: 400)
-						Text("Lock Reminder")
+						Text("Loc Reminder")
 							.font(.largeTitle
 								.bold())
 							.foregroundColor(.white)
@@ -190,7 +190,7 @@ struct OnboardingView: View {
                             .bold())
                         .foregroundColor(.white)
                         .padding(10)
-                    Text("Lock Reminder alerts you by delivering notifications if a location based event occurs.")
+                    Text("Loc Reminder alerts you by delivering notifications if a location based event occurs.")
                         .frame(width: 332, height: 75)
                         .scaledToFill()
                         .foregroundColor(.white)

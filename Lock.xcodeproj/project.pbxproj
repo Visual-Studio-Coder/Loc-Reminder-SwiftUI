@@ -7,7 +7,6 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		602BE00B0220564A77CF144F /* Pods_LockTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BA1D51EC83AEE9299A33D6A5 /* Pods_LockTests.framework */; };
 		781AE96C2A358FB0007B4F2F /* SpotBrowser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 781AE96B2A358FB0007B4F2F /* SpotBrowser.swift */; };
 		781AE96E2A358FDB007B4F2F /* InfoTab.swift in Sources */ = {isa = PBXBuildFile; fileRef = 781AE96D2A358FDB007B4F2F /* InfoTab.swift */; };
 		781AE9702A358FEA007B4F2F /* SpotNotificationLogger.swift in Sources */ = {isa = PBXBuildFile; fileRef = 781AE96F2A358FEA007B4F2F /* SpotNotificationLogger.swift */; };
@@ -34,32 +33,9 @@
 		78F99D012A476DB100FF1462 /* LocationAlwaysPermission in Frameworks */ = {isa = PBXBuildFile; productRef = 78F99D002A476DB100FF1462 /* LocationAlwaysPermission */; };
 		78F99D032A476DB100FF1462 /* LocationWhenInUsePermission in Frameworks */ = {isa = PBXBuildFile; productRef = 78F99D022A476DB100FF1462 /* LocationWhenInUsePermission */; };
 		78F99D052A476DB100FF1462 /* NotificationPermission in Frameworks */ = {isa = PBXBuildFile; productRef = 78F99D042A476DB100FF1462 /* NotificationPermission */; };
-		805CC32689AF1BDC7DE60174 /* Pods_Lock_LockUITests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BE109F83EF1BF98CD16C5028 /* Pods_Lock_LockUITests.framework */; };
-		D8A1BB7000EABCBAA6AC8E7F /* Pods_Lock.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9559A177BFD359F9A7378A68 /* Pods_Lock.framework */; };
 /* End PBXBuildFile section */
 
-/* Begin PBXContainerItemProxy section */
-		78D7A03A29F8985300660C56 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 78D7A02129F8985100660C56 /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = 78D7A02829F8985100660C56;
-			remoteInfo = Lock;
-		};
-		78D7A04429F8985400660C56 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 78D7A02129F8985100660C56 /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = 78D7A02829F8985100660C56;
-			remoteInfo = Lock;
-		};
-/* End PBXContainerItemProxy section */
-
 /* Begin PBXFileReference section */
-		17D766C0E5A2AEE2BCFF13E5 /* Pods-LockTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-LockTests.release.xcconfig"; path = "Target Support Files/Pods-LockTests/Pods-LockTests.release.xcconfig"; sourceTree = "<group>"; };
-		570A49AC1B3941D4FCE3E0CF /* Pods-Lock.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Lock.debug.xcconfig"; path = "Target Support Files/Pods-Lock/Pods-Lock.debug.xcconfig"; sourceTree = "<group>"; };
-		5E9378A1081D583A0DBEFE1C /* Pods-LockTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-LockTests.debug.xcconfig"; path = "Target Support Files/Pods-LockTests/Pods-LockTests.debug.xcconfig"; sourceTree = "<group>"; };
-		63BC3F2F4393A8FDF2731C37 /* Pods-Lock-LockUITests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Lock-LockUITests.debug.xcconfig"; path = "Target Support Files/Pods-Lock-LockUITests/Pods-Lock-LockUITests.debug.xcconfig"; sourceTree = "<group>"; };
 		781AE96B2A358FB0007B4F2F /* SpotBrowser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpotBrowser.swift; sourceTree = "<group>"; };
 		781AE96D2A358FDB007B4F2F /* InfoTab.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InfoTab.swift; sourceTree = "<group>"; };
 		781AE96F2A358FEA007B4F2F /* SpotNotificationLogger.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpotNotificationLogger.swift; sourceTree = "<group>"; };
@@ -74,21 +50,14 @@
 		78619F8D29F97C5D0034DC5D /* fontDefault-thin.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "fontDefault-thin.ttf"; sourceTree = "<group>"; };
 		78761E292A6F2CEF00A50B7D /* LocationManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationManager.swift; sourceTree = "<group>"; };
 		78B54E4C2DF27F67003598CA /* NotificationDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationDelegate.swift; sourceTree = "<group>"; };
-		78D7A02929F8985100660C56 /* Lock.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Lock.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		78B54E512DF2C3CF003598CA /* Lock.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Lock.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		78D7A02C29F8985100660C56 /* LockApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LockApp.swift; sourceTree = "<group>"; };
 		78D7A02E29F8985100660C56 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		78D7A03029F8985300660C56 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		78D7A03329F8985300660C56 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
-		78D7A03929F8985300660C56 /* LockTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = LockTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		78D7A04329F8985400660C56 /* LockUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = LockUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		78D7A05829F89BA400660C56 /* threeDimensionalButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = threeDimensionalButton.swift; sourceTree = "<group>"; };
 		78EA523F2A2BB5DF00E2B820 /* ParallaxView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ParallaxView.swift; sourceTree = "<group>"; };
 		78F99CFA2A466CDA00FF1462 /* OnboardingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingView.swift; sourceTree = "<group>"; };
-		8AE07B260B78E8865F7DEC15 /* Pods-Lock-LockUITests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Lock-LockUITests.release.xcconfig"; path = "Target Support Files/Pods-Lock-LockUITests/Pods-Lock-LockUITests.release.xcconfig"; sourceTree = "<group>"; };
-		9559A177BFD359F9A7378A68 /* Pods_Lock.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Lock.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		BA1D51EC83AEE9299A33D6A5 /* Pods_LockTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_LockTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		BE109F83EF1BF98CD16C5028 /* Pods_Lock_LockUITests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Lock_LockUITests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		E440C81E0EB86C27CB64FB83 /* Pods-Lock.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Lock.release.xcconfig"; path = "Target Support Files/Pods-Lock/Pods-Lock.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -99,63 +68,21 @@
 				78B54E502DF2BA78003598CA /* Setting in Frameworks */,
 				78F99D032A476DB100FF1462 /* LocationWhenInUsePermission in Frameworks */,
 				781F3B562A3FA6D200E346F1 /* EmojiPicker in Frameworks */,
-				D8A1BB7000EABCBAA6AC8E7F /* Pods_Lock.framework in Frameworks */,
 				781F3B532A3F957500E346F1 /* SFSymbolsPicker in Frameworks */,
 				78F99D052A476DB100FF1462 /* NotificationPermission in Frameworks */,
 				78F99D012A476DB100FF1462 /* LocationAlwaysPermission in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		78D7A03629F8985300660C56 /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				602BE00B0220564A77CF144F /* Pods_LockTests.framework in Frameworks */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		78D7A04029F8985400660C56 /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				805CC32689AF1BDC7DE60174 /* Pods_Lock_LockUITests.framework in Frameworks */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		5738CDF077C18E609778EA0A /* Pods */ = {
-			isa = PBXGroup;
-			children = (
-				570A49AC1B3941D4FCE3E0CF /* Pods-Lock.debug.xcconfig */,
-				E440C81E0EB86C27CB64FB83 /* Pods-Lock.release.xcconfig */,
-				63BC3F2F4393A8FDF2731C37 /* Pods-Lock-LockUITests.debug.xcconfig */,
-				8AE07B260B78E8865F7DEC15 /* Pods-Lock-LockUITests.release.xcconfig */,
-				5E9378A1081D583A0DBEFE1C /* Pods-LockTests.debug.xcconfig */,
-				17D766C0E5A2AEE2BCFF13E5 /* Pods-LockTests.release.xcconfig */,
-			);
-			path = Pods;
-			sourceTree = "<group>";
-		};
 		78D7A02029F8985100660C56 = {
 			isa = PBXGroup;
 			children = (
 				78D7A02B29F8985100660C56 /* Lock */,
-				78D7A02A29F8985100660C56 /* Products */,
-				5738CDF077C18E609778EA0A /* Pods */,
-				A575B2B29D70D334D66CB39F /* Frameworks */,
+				78B54E512DF2C3CF003598CA /* Lock.app */,
 			);
-			sourceTree = "<group>";
-		};
-		78D7A02A29F8985100660C56 /* Products */ = {
-			isa = PBXGroup;
-			children = (
-				78D7A02929F8985100660C56 /* Lock.app */,
-				78D7A03929F8985300660C56 /* LockTests.xctest */,
-				78D7A04329F8985400660C56 /* LockUITests.xctest */,
-			);
-			name = Products;
 			sourceTree = "<group>";
 		};
 		78D7A02B29F8985100660C56 /* Lock */ = {
@@ -194,16 +121,6 @@
 			path = "Preview Content";
 			sourceTree = "<group>";
 		};
-		A575B2B29D70D334D66CB39F /* Frameworks */ = {
-			isa = PBXGroup;
-			children = (
-				9559A177BFD359F9A7378A68 /* Pods_Lock.framework */,
-				BE109F83EF1BF98CD16C5028 /* Pods_Lock_LockUITests.framework */,
-				BA1D51EC83AEE9299A33D6A5 /* Pods_LockTests.framework */,
-			);
-			name = Frameworks;
-			sourceTree = "<group>";
-		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -211,7 +128,6 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 78D7A04D29F8985400660C56 /* Build configuration list for PBXNativeTarget "Lock" */;
 			buildPhases = (
-				D4AE83382783FB123324CC0A /* [CP] Check Pods Manifest.lock */,
 				78D7A02529F8985100660C56 /* Sources */,
 				78D7A02629F8985100660C56 /* Frameworks */,
 				78D7A02729F8985100660C56 /* Resources */,
@@ -230,46 +146,8 @@
 				78B54E4F2DF2BA78003598CA /* Setting */,
 			);
 			productName = Lock;
-			productReference = 78D7A02929F8985100660C56 /* Lock.app */;
+			productReference = 78B54E512DF2C3CF003598CA /* Lock.app */;
 			productType = "com.apple.product-type.application";
-		};
-		78D7A03829F8985300660C56 /* LockTests */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = 78D7A05029F8985400660C56 /* Build configuration list for PBXNativeTarget "LockTests" */;
-			buildPhases = (
-				1BFBFC02BCA6C8D70CDEA713 /* [CP] Check Pods Manifest.lock */,
-				78D7A03529F8985300660C56 /* Sources */,
-				78D7A03629F8985300660C56 /* Frameworks */,
-				78D7A03729F8985300660C56 /* Resources */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-				78D7A03B29F8985300660C56 /* PBXTargetDependency */,
-			);
-			name = LockTests;
-			productName = LockTests;
-			productReference = 78D7A03929F8985300660C56 /* LockTests.xctest */;
-			productType = "com.apple.product-type.bundle.unit-test";
-		};
-		78D7A04229F8985400660C56 /* LockUITests */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = 78D7A05329F8985400660C56 /* Build configuration list for PBXNativeTarget "LockUITests" */;
-			buildPhases = (
-				52C1FC89CBE49AFE81477F8E /* [CP] Check Pods Manifest.lock */,
-				78D7A03F29F8985400660C56 /* Sources */,
-				78D7A04029F8985400660C56 /* Frameworks */,
-				78D7A04129F8985400660C56 /* Resources */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-				78D7A04529F8985400660C56 /* PBXTargetDependency */,
-			);
-			name = LockUITests;
-			productName = LockUITests;
-			productReference = 78D7A04329F8985400660C56 /* LockUITests.xctest */;
-			productType = "com.apple.product-type.bundle.ui-testing";
 		};
 /* End PBXNativeTarget section */
 
@@ -283,14 +161,6 @@
 				TargetAttributes = {
 					78D7A02829F8985100660C56 = {
 						CreatedOnToolsVersion = 14.1;
-					};
-					78D7A03829F8985300660C56 = {
-						CreatedOnToolsVersion = 14.1;
-						TestTargetID = 78D7A02829F8985100660C56;
-					};
-					78D7A04229F8985400660C56 = {
-						CreatedOnToolsVersion = 14.1;
-						TestTargetID = 78D7A02829F8985100660C56;
 					};
 				};
 			};
@@ -309,13 +179,11 @@
 				78F99CFF2A476DB100FF1462 /* XCRemoteSwiftPackageReference "PermissionsKit" */,
 				78B54E4E2DF2BA78003598CA /* XCRemoteSwiftPackageReference "Setting" */,
 			);
-			productRefGroup = 78D7A02A29F8985100660C56 /* Products */;
+			productRefGroup = 78D7A02029F8985100660C56;
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
 				78D7A02829F8985100660C56 /* Lock */,
-				78D7A03829F8985300660C56 /* LockTests */,
-				78D7A04229F8985400660C56 /* LockUITests */,
 			);
 		};
 /* End PBXProject section */
@@ -331,90 +199,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		78D7A03729F8985300660C56 /* Resources */ = {
-			isa = PBXResourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		78D7A04129F8985400660C56 /* Resources */ = {
-			isa = PBXResourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 /* End PBXResourcesBuildPhase section */
-
-/* Begin PBXShellScriptBuildPhase section */
-		1BFBFC02BCA6C8D70CDEA713 /* [CP] Check Pods Manifest.lock */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-			);
-			inputPaths = (
-				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
-				"${PODS_ROOT}/Manifest.lock",
-			);
-			name = "[CP] Check Pods Manifest.lock";
-			outputFileListPaths = (
-			);
-			outputPaths = (
-				"$(DERIVED_FILE_DIR)/Pods-LockTests-checkManifestLockResult.txt",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
-			showEnvVarsInLog = 0;
-		};
-		52C1FC89CBE49AFE81477F8E /* [CP] Check Pods Manifest.lock */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-			);
-			inputPaths = (
-				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
-				"${PODS_ROOT}/Manifest.lock",
-			);
-			name = "[CP] Check Pods Manifest.lock";
-			outputFileListPaths = (
-			);
-			outputPaths = (
-				"$(DERIVED_FILE_DIR)/Pods-Lock-LockUITests-checkManifestLockResult.txt",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
-			showEnvVarsInLog = 0;
-		};
-		D4AE83382783FB123324CC0A /* [CP] Check Pods Manifest.lock */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-			);
-			inputPaths = (
-				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
-				"${PODS_ROOT}/Manifest.lock",
-			);
-			name = "[CP] Check Pods Manifest.lock";
-			outputFileListPaths = (
-			);
-			outputPaths = (
-				"$(DERIVED_FILE_DIR)/Pods-Lock-checkManifestLockResult.txt",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
-			showEnvVarsInLog = 0;
-		};
-/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		78D7A02529F8985100660C56 /* Sources */ = {
@@ -441,34 +226,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		78D7A03529F8985300660C56 /* Sources */ = {
-			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		78D7A03F29F8985400660C56 /* Sources */ = {
-			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 /* End PBXSourcesBuildPhase section */
-
-/* Begin PBXTargetDependency section */
-		78D7A03B29F8985300660C56 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = 78D7A02829F8985100660C56 /* Lock */;
-			targetProxy = 78D7A03A29F8985300660C56 /* PBXContainerItemProxy */;
-		};
-		78D7A04529F8985400660C56 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = 78D7A02829F8985100660C56 /* Lock */;
-			targetProxy = 78D7A04429F8985400660C56 /* PBXContainerItemProxy */;
-		};
-/* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
 		78D7A04B29F8985400660C56 /* Debug */ = {
@@ -587,7 +345,6 @@
 		};
 		78D7A04E29F8985400660C56 /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 570A49AC1B3941D4FCE3E0CF /* Pods-Lock.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
@@ -598,6 +355,8 @@
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = Lock/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = "Loc Reminder";
+				INFOPLIST_KEY_NSHumanReadableCopyright = "Copyright © 2025 Vaibhav Satishkumar. All rights reserved.";
 				INFOPLIST_KEY_NSLocationAlwaysAndWhenInUseUsageDescription = "Enable location so we can detect when you have left your desired location.";
 				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "Enable location so we can detect when you have left your desired location.";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
@@ -610,8 +369,8 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.Lock;
+				MARKETING_VERSION = 2.5.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.click.distanceTester2;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
 				SUPPORTS_MACCATALYST = NO;
@@ -624,7 +383,6 @@
 		};
 		78D7A04F29F8985400660C56 /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = E440C81E0EB86C27CB64FB83 /* Pods-Lock.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
@@ -635,6 +393,8 @@
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = Lock/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = "Loc Reminder";
+				INFOPLIST_KEY_NSHumanReadableCopyright = "Copyright © 2025 Vaibhav Satishkumar. All rights reserved.";
 				INFOPLIST_KEY_NSLocationAlwaysAndWhenInUseUsageDescription = "Enable location so we can detect when you have left your desired location.";
 				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "Enable location so we can detect when you have left your desired location.";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
@@ -647,8 +407,8 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.Lock;
+				MARKETING_VERSION = 2.5.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.click.distanceTester2;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
 				SUPPORTS_MACCATALYST = NO;
@@ -656,82 +416,6 @@
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = 1;
-			};
-			name = Release;
-		};
-		78D7A05129F8985400660C56 /* Debug */ = {
-			isa = XCBuildConfiguration;
-			baseConfigurationReference = 5E9378A1081D583A0DBEFE1C /* Pods-LockTests.debug.xcconfig */;
-			buildSettings = {
-				BUNDLE_LOADER = "$(TEST_HOST)";
-				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = SU5789R8HD;
-				GENERATE_INFOPLIST_FILE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 16.1;
-				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.LockTests;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_EMIT_LOC_STRINGS = NO;
-				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Lock.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/Lock";
-			};
-			name = Debug;
-		};
-		78D7A05229F8985400660C56 /* Release */ = {
-			isa = XCBuildConfiguration;
-			baseConfigurationReference = 17D766C0E5A2AEE2BCFF13E5 /* Pods-LockTests.release.xcconfig */;
-			buildSettings = {
-				BUNDLE_LOADER = "$(TEST_HOST)";
-				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = SU5789R8HD;
-				GENERATE_INFOPLIST_FILE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 16.1;
-				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.LockTests;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_EMIT_LOC_STRINGS = NO;
-				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Lock.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/Lock";
-			};
-			name = Release;
-		};
-		78D7A05429F8985400660C56 /* Debug */ = {
-			isa = XCBuildConfiguration;
-			baseConfigurationReference = 63BC3F2F4393A8FDF2731C37 /* Pods-Lock-LockUITests.debug.xcconfig */;
-			buildSettings = {
-				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = SU5789R8HD;
-				GENERATE_INFOPLIST_FILE = YES;
-				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.LockUITests;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_EMIT_LOC_STRINGS = NO;
-				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
-				TEST_TARGET_NAME = Lock;
-			};
-			name = Debug;
-		};
-		78D7A05529F8985400660C56 /* Release */ = {
-			isa = XCBuildConfiguration;
-			baseConfigurationReference = 8AE07B260B78E8865F7DEC15 /* Pods-Lock-LockUITests.release.xcconfig */;
-			buildSettings = {
-				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = SU5789R8HD;
-				GENERATE_INFOPLIST_FILE = YES;
-				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.LockUITests;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_EMIT_LOC_STRINGS = NO;
-				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
-				TEST_TARGET_NAME = Lock;
 			};
 			name = Release;
 		};
@@ -752,24 +436,6 @@
 			buildConfigurations = (
 				78D7A04E29F8985400660C56 /* Debug */,
 				78D7A04F29F8985400660C56 /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
-		};
-		78D7A05029F8985400660C56 /* Build configuration list for PBXNativeTarget "LockTests" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				78D7A05129F8985400660C56 /* Debug */,
-				78D7A05229F8985400660C56 /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
-		};
-		78D7A05329F8985400660C56 /* Build configuration list for PBXNativeTarget "LockUITests" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				78D7A05429F8985400660C56 /* Debug */,
-				78D7A05529F8985400660C56 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
