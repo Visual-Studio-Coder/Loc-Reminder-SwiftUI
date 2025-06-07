@@ -90,7 +90,9 @@ class LogManager: ObservableObject {
 }
 
 struct SpotNotificationLogger: View {
-    @StateObject private var logManager = LogManager.shared
+    @Environment(\.managedObjectContext) private var moc // Use environment context
+    @EnvironmentObject private var locationManager: LocationDataManager // Use environment object
+    @StateObject private var logManager = LogManager.shared // Add this line
     
     var body: some View {
         NavigationView {

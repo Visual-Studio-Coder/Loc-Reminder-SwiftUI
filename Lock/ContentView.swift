@@ -9,172 +9,113 @@
 import SwiftUI
 import CoreLocation
 import UserNotifications
+import CoreData
 
 struct ContentView: View {
     // This AppStorage variable is the source of truth for whether onboarding has been completed.
     // `false` means onboarding should be shown.
     // `true` means onboarding has been completed and shouldn't be shown automatically.
-    @AppStorage("shouldShowOnboarding") var dontShowOnboarding: Bool = false
+    @AppStorage("shouldShowOnboarding") var shouldShowOnboarding: Bool = true
 
     // Local state to control the presentation of the fullScreenCover.
     @State private var showOnboardingCover: Bool = false
 
-    @Environment(\.managedObjectContext) var moc
-
-    @FetchRequest(sortDescriptors: []) var spots: FetchedResults<Spots>
-    
-    // Add location manager for monitoring
+    // Create single instances here to be shared
     @StateObject private var locationManager = LocationDataManager()
+    @StateObject private var dataController = DataController()
+    @State private var selectedTab = 0 // Add tab selection state
+    @State private var spotToEditFromNotification: String? // Track spot to edit from notification
 
     var body: some View {
-        TabView {
-            SpotNotificationLogger()
-                .tabItem {
-                    Image(systemName: "list.bullet.rectangle")
-                    Text("Logs")
-                }
-            SpotBrowser()
-                .tabItem {
-                    Image(systemName: "mappin.circle.fill")
-                    Text("Spots")
-                }
-            
-            InfoTab()
-                .tabItem {
-                    Label("About", systemImage: "info.circle.fill")
-                }
-        }
-        .onAppear {
-            // Set up location manager with Core Data context
-            locationManager.setManagedObjectContext(moc)
-            
-            // Request notification permissions explicitly and set up notification categories
-            UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .badge, .sound]) { granted, error in
-                if granted {
-                    print("✅ Notification permission granted in ContentView")
-                    // Set up notification delegate to handle actions
-                    DispatchQueue.main.async {
-                        UNUserNotificationCenter.current().delegate = NotificationDelegate.shared
-                        self.setupNotificationCategories()
-                    }
-                } else {
-                    print("❌ Notification permission denied in ContentView")
-                }
+        MainTabView(selectedTab: $selectedTab, spotToEditFromNotification: $spotToEditFromNotification)
+            .environmentObject(locationManager)
+            .environment(\.managedObjectContext, dataController.container.viewContext)
+            .fullScreenCover(isPresented: $shouldShowOnboarding) {
+                // OnboardingView will also get the locationManager and moc from the environment
+                OnboardingView(isPresented: $shouldShowOnboarding)
+                    .environmentObject(locationManager)
+                    .environment(\.managedObjectContext, dataController.container.viewContext)
             }
-            
-            // Start monitoring existing spots
-            startMonitoringExistingSpots()
-            
-            // Debug: Print current authorization status
-            print("Current location authorization: \(locationManager.locationManager.authorizationStatus)")
-            print("Number of spots to monitor: \(spots.count)")
-            
-            // This will run when ContentView first appears.
-            // We only want to trigger the onboarding if it hasn't been shown yet.
-            if !dontShowOnboarding {
-                // If onboarding has not been completed (dontShowOnboarding is false),
-                // then set our state to show the cover.
-                self.showOnboardingCover = true
-            }
-        }
-        .onChange(of: dontShowOnboarding) { newValue in
-            // This will run whenever dontShowOnboarding changes value.
-            // For example, when OnboardingView sets it to true, or InfoTab sets it to false.
-            // We update showOnboardingCover to reflect the desired state:
-            // - If dontShowOnboarding becomes false (show it), showOnboardingCover becomes true.
-            // - If dontShowOnboarding becomes true (hide it), showOnboardingCover becomes false.
-            self.showOnboardingCover = !newValue
-        }
-        .fullScreenCover(isPresented: $showOnboardingCover) {
-            OnboardingView()
-            // OnboardingView will set `dontShowOnboarding = true` when it's dismissed by the user.
-            // The .onChange modifier above will then set `showOnboardingCover = false`, dismissing this cover.
-        }
-    }
-    
-    // Method to start monitoring all existing spots
-    private func startMonitoringExistingSpots() {
-        print("🏁 Starting to monitor \(spots.count) existing spots")
-        
-        for spot in spots {
-            print("🔍 Debugging spot: \(spot.nameOfLocation ?? "Unknown")")
-            print("   ID: \(spot.id?.uuidString ?? "No ID")")
-            print("   Latitude raw: \(spot.latitude)")
-            print("   Longitude raw: \(spot.longitude)")
-            print("   Address: \(spot.address ?? "No address")")
-            print("   Distance: \(spot.distanceFromSpot)")
-            
-            if let id = spot.id {
-                let coordinate = CLLocationCoordinate2D(latitude: spot.latitude, longitude: spot.longitude)
-                print("   Coordinate created: \(coordinate.latitude), \(coordinate.longitude)")
+            .onAppear {
+                // Set up notification delegate and categories
+                setupNotifications()
                 
-                if coordinate.latitude != 0.0 && coordinate.longitude != 0.0 {
-                    print("✅ Valid coordinates - Setting up monitoring for: \(spot.nameOfLocation ?? "Unknown")")
-                    print("   Location: \(coordinate.latitude), \(coordinate.longitude)")
-                    print("   Radius: \(spot.distanceFromSpot) meters")
-                    
-                    locationManager.monitorRegionAtLocation(center: coordinate, identifier: id.uuidString)
-                } else {
-                    print("❌ Invalid coordinates for spot: \(spot.nameOfLocation ?? "Unknown")")
-                    print("   Latitude: \(coordinate.latitude)")
-                    print("   Longitude: \(coordinate.longitude)")
-                }
-            } else {
-                print("❌ No ID for spot: \(spot.nameOfLocation ?? "Unknown")")
+                // Inject the managed object context into the location manager
+                locationManager.setManagedObjectContext(dataController.container.viewContext)
             }
-        }
-        
-        // Add a small delay then check what regions are being monitored
-        DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) {
-            print("📊 Final monitoring status:")
-            print("   Total regions being monitored: \(self.locationManager.locationManager.monitoredRegions.count)")
-            for region in self.locationManager.locationManager.monitoredRegions {
-                if let circularRegion = region as? CLCircularRegion {
-                    print("   - \(region.identifier): radius \(circularRegion.radius)m")
+            .onReceive(NotificationCenter.default.publisher(for: NSNotification.Name("OpenSpotForEditing"))) { notification in
+                if let spotId = notification.userInfo?["spotId"] as? String {
+                    // Switch to spots tab and set spot to edit
+                    selectedTab = 0 // Spots tab
+                    spotToEditFromNotification = spotId
                 }
             }
-        }
     }
     
-    private func setupNotificationCategories() {
-        let okayAction = UNNotificationAction(
-            identifier: "OKAY",
-            title: "Okay",
-            options: []
+    private func setupNotifications() {
+        let center = UNUserNotificationCenter.current()
+        center.delegate = NotificationDelegate.shared
+        
+        // Define notification actions - using the actual identifiers your app sends
+        let goodAction = UNNotificationAction(
+            identifier: "GOOD",
+            title: "👍 Good",
+            options: [.foreground]
         )
         
-        let notOkayAction = UNNotificationAction(
-            identifier: "NOT_OKAY",
-            title: "Not Okay",
+        let badAction = UNNotificationAction(
+            identifier: "BAD", 
+            title: "👎 Not Good",
             options: [.foreground]
         )
         
         let editAction = UNNotificationAction(
-            identifier: "EDIT_SPOT",
-            title: "Edit Spot",
+            identifier: "EDIT",
+            title: "✏️ Edit",
             options: [.foreground]
         )
         
-        let category = UNNotificationCategory(
+        // Create the category with actions
+        let locationCategory = UNNotificationCategory(
             identifier: "LOCATION_REMINDER",
-            actions: [okayAction, notOkayAction, editAction],
+            actions: [goodAction, badAction, editAction],
             intentIdentifiers: [],
-            options: []
+            options: [.customDismissAction]
         )
         
-        UNUserNotificationCenter.current().setNotificationCategories([category])
-        print("✅ Notification categories set up in ContentView")
+        // Register the category
+        center.setNotificationCategories([locationCategory])
+        
+        print("✅ Notification categories registered with actions: GOOD, BAD, EDIT")
     }
 }
 
-struct ContentView_Previews: PreviewProvider {
-    static var previews: some View {
-        ContentView()
+struct MainTabView: View {
+    @Binding var selectedTab: Int
+    @Binding var spotToEditFromNotification: String?
+    
+    var body: some View {
+        TabView(selection: $selectedTab) {
+            SpotBrowser(spotToEditFromNotification: $spotToEditFromNotification)
+                .tabItem {
+                    Label("Spots", systemImage: "mappin.and.ellipse")
+                }
+                .tag(0)
+            
+            SpotNotificationLogger() // Use your original SpotNotificationLogger view
+                .tabItem {
+                    Label("Logs", systemImage: "list.bullet.rectangle")
+                }
+                .tag(1)
+            
+            InfoTab()
+                .tabItem {
+                    Label("About", systemImage: "info.circle")
+                }
+                .tag(2)
+        }
     }
 }
-     
-
-
 
 extension UIApplication {
     func endEditing() {

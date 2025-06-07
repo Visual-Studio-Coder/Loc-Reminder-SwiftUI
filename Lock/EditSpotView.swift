@@ -13,14 +13,15 @@ import EmojiPicker
 import CoreLocation
 
 struct EditSpotView: View {
-    
-    @Environment(\.managedObjectContext) var moc
-    @Environment(\.dismiss) var dismiss
+    @Environment(\.managedObjectContext) private var moc // Use environment context
+    @EnvironmentObject private var locationManager: LocationDataManager // Use environment object
+    @Environment(\.dismiss) private var dismiss
     
     let spot: Spots
     
-    // Add LocationDataManager to start monitoring
-    @StateObject private var locationManager = LocationDataManager()
+    // REMOVE any lines like these if they exist:
+    // @StateObject private var dataController = DataController()
+    // @StateObject private var locationManager = LocationDataManager()
     
     let geocoder = CLGeocoder()
     @State private var notificationTitle = ""
@@ -85,9 +86,9 @@ struct EditSpotView: View {
                 }
                 
                 Section {
-                    Text("Notification Title:")
+                    Text("Notification Title")
                     TextField("Important Question:", text: $notificationTitle)
-                    Text("Notification Body:")
+                    Text("Notification Body")
                     TextField("Have you locked your house?", text: $notificationBody)
                 } header: {
                     Text("Customize the notification properties")
@@ -143,9 +144,22 @@ struct EditSpotView: View {
                         spot.longitude = location.longitude
                         spot.latitude = location.latitude
                         
-                        // Update monitoring for this location
-                        let coordinate = CLLocationCoordinate2D(latitude: location.latitude, longitude: location.longitude)
-                        locationManager.monitorRegionAtLocation(center: coordinate, identifier: spot.id!.uuidString)
+                        // FIXED: Stop existing monitoring before starting new one
+                        if let spotId = spot.id {
+                            for region in locationManager.locationManager.monitoredRegions { // Uses environment object
+                                if region.identifier == spotId.uuidString {
+                                    locationManager.locationManager.stopMonitoring(for: region) // Uses environment object
+                                    print("🔄 Stopped existing monitoring for updated spot")
+                                    break
+                                }
+                            }
+                            
+                            // Start monitoring with updated settings after a brief delay
+                            DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
+                                let coordinate = CLLocationCoordinate2D(latitude: location.latitude, longitude: location.longitude)
+                                locationManager.monitorRegionAtLocation(center: coordinate, identifier: spotId.uuidString) // Uses environment object
+                            }
+                        }
                         
                         do {
                             try moc.save()
@@ -212,9 +226,22 @@ struct EditSpotView: View {
                         spot.longitude = location.longitude
                         spot.latitude = location.latitude
                         
-                        // Update monitoring for this location
-                        let coordinate = CLLocationCoordinate2D(latitude: location.latitude, longitude: location.longitude)
-                        locationManager.monitorRegionAtLocation(center: coordinate, identifier: spot.id!.uuidString)
+                        // FIXED: Stop existing monitoring before starting new one (toolbar version)
+                        if let spotId = spot.id {
+                            for region in locationManager.locationManager.monitoredRegions { // Uses environment object
+                                if region.identifier == spotId.uuidString {
+                                    locationManager.locationManager.stopMonitoring(for: region) // Uses environment object
+                                    print("🔄 Stopped existing monitoring for updated spot (toolbar)")
+                                    break
+                                }
+                            }
+                            
+                            // Start monitoring with updated settings after a brief delay
+                            DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
+                                let coordinate = CLLocationCoordinate2D(latitude: location.latitude, longitude: location.longitude)
+                                locationManager.monitorRegionAtLocation(center: coordinate, identifier: spotId.uuidString) // Uses environment object
+                            }
+                        }
                         
                         do {
                             try moc.save()

@@ -11,7 +11,7 @@ import UserNotifications
 
 struct InfoTab: View {
     @Environment(\.openURL) var openURL
-    @AppStorage("shouldShowOnboarding") var dontShowOnboarding: Bool = false
+    @AppStorage("shouldShowOnboarding") var shouldShowOnboarding: Bool = true
     @State private var showingAppInfo = false
 
     var body: some View {
@@ -53,7 +53,7 @@ struct InfoTab: View {
                 // Quick Actions Section
                 Section("Quick Actions") {
                     Button {
-                        dontShowOnboarding = false
+                        shouldShowOnboarding = true
                     } label: {
                         Label("Show Onboarding Again", systemImage: "questionmark.circle")
                     }
@@ -163,6 +163,11 @@ struct InfoTab: View {
                             Text(Bundle.main.infoDictionary?["CFBundleVersion"] as? String ?? "Unknown")
                                 .font(.caption.monospaced())
                         }
+                        
+                        Button("Check Notification Status") {
+                            checkNotificationStatus()
+                        }
+                        .font(.caption)
                     }
                     .padding(.vertical, 4)
                 }
@@ -175,37 +180,156 @@ struct InfoTab: View {
     }
     
     private func sendTestNotification() {
+        UNUserNotificationCenter.current().getNotificationSettings { settings in
+            DispatchQueue.main.async {
+                print("📱 Notification Settings:")
+                print("   Authorization Status: \(settings.authorizationStatus.rawValue)")
+                print("   Alert Setting: \(settings.alertSetting.rawValue)")
+                print("   Badge Setting: \(settings.badgeSetting.rawValue)")
+                print("   Sound Setting: \(settings.soundSetting.rawValue)")
+                print("   Notification Center Setting: \(settings.notificationCenterSetting.rawValue)")
+                print("   Lock Screen Setting: \(settings.lockScreenSetting.rawValue)")
+                
+                guard settings.authorizationStatus == .authorized else {
+                    print("❌ Notifications not authorized - status: \(settings.authorizationStatus.rawValue)")
+                    return
+                }
+                
+                self.createAndSendTestNotification()
+            }
+        }
+    }
+    
+    private func createAndSendTestNotification() {
         let center = UNUserNotificationCenter.current()
         
+        // Set delegate to show notifications even when app is in foreground
+        center.delegate = NotificationDelegate.shared
+        
         let content = UNMutableNotificationContent()
-        content.title = "Test Location Reminder"
-        content.body = "This is a test notification with all available actions"
+        content.title = "🧪 Test Location Reminder"
+        content.body = "Did you remember to lock your house? Tap to respond."
         content.sound = UNNotificationSound.default
-        content.categoryIdentifier = "LOCATION_REMINDER"
-        content.userInfo = ["spotName": "Test Location", "spotId": "test-spot-id", "isEntry": true]
+        content.categoryIdentifier = "LOCATION_REMINDER" // Use the same category as real notifications
+        content.userInfo = [
+            "spotName": "Test Location", 
+            "spotId": "test-spot-id", 
+            "isEntry": true,
+            "isTestNotification": true
+        ]
         
-        // Increment badge for test notification
-        UIApplication.shared.applicationIconBadgeNumber += 1
-        content.badge = NSNumber(value: UIApplication.shared.applicationIconBadgeNumber)
+        // Set badge to a persistent number
+        content.badge = NSNumber(value: 1)
         
-        if #available(iOS 15.0, *) {
-            content.interruptionLevel = .timeSensitive
-        }
+        // Use immediate trigger for testing
+        let trigger = UNTimeIntervalNotificationTrigger(timeInterval: 0.1, repeats: false)
+        let request = UNNotificationRequest(identifier: "test-notification-\(Date().timeIntervalSince1970)", content: content, trigger: trigger)
         
-        let trigger = UNTimeIntervalNotificationTrigger(timeInterval: 1, repeats: false)
-        let request = UNNotificationRequest(identifier: "test-notification", content: content, trigger: trigger)
+        print("📤 Attempting to send test notification...")
+        print("   Title: \(content.title)")
+        print("   Body: \(content.body)")
+        print("   Category: \(content.categoryIdentifier)")
+        print("   Badge: \(content.badge?.intValue ?? 0)")
+        print("   Identifier: \(request.identifier)")
+        print("   ⏰ Will fire in 0.1 seconds")
         
         center.add(request) { error in
-            if let error = error {
-                print("❌ Test notification error: \(error)")
-            } else {
-                print("✅ Test notification sent")
-                LogManager.shared.addLog(
-                    eventType: .notificationSent,
-                    spotName: "Test Location",
-                    message: "Test notification sent from About tab"
-                )
+            DispatchQueue.main.async {
+                if let error = error {
+                    print("❌ Test notification error: \(error.localizedDescription)")
+                } else {
+                    print("✅ Test notification queued successfully")
+                    print("   🔔 Should appear with action buttons: 👍 Good, 👎 Not Good, ✏️ Edit")
+                    
+                    // Set the badge explicitly on the app
+                    UIApplication.shared.applicationIconBadgeNumber = 1
+                    
+                    // Show backup alert after 5 seconds if needed
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 5.0) {
+                        self.showTestAlert()
+                    }
+                    
+                    if let logManager = LogManager.shared as? LogManager {
+                        logManager.addLog(
+                            eventType: .notificationSent,
+                            spotName: "Test Location",
+                            message: "Interactive test notification sent with Good/Not Good/Edit actions"
+                        )
+                    }
+                }
             }
+        }
+        
+        // Check registered categories
+        center.getNotificationCategories { categories in
+            DispatchQueue.main.async {
+                print("📋 Registered categories: \(categories.count)")
+                for category in categories {
+                    print("   - \(category.identifier): \(category.actions.count) actions")
+                    for action in category.actions {
+                        print("     • \(action.identifier): \(action.title)")
+                    }
+                }
+            }
+        }
+    }
+    
+    private func showTestAlert() {
+        let alert = UIAlertController(
+            title: "🧪 Interactive Test Notification Sent",
+            message: "The test notification should appear with action buttons like your real location reminders. If you don't see it:\n\n• Put the app in background\n• Check notification settings\n• Look for the red badge on the app icon\n• Try tapping the notification to see the response options",
+            preferredStyle: .alert
+        )
+        alert.addAction(UIAlertAction(title: "OK", style: .default))
+        
+        if let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
+           let window = windowScene.windows.first,
+           let rootViewController = window.rootViewController {
+            rootViewController.present(alert, animated: true)
+        }
+    }
+    
+    private func checkNotificationStatus() {
+        UNUserNotificationCenter.current().getNotificationSettings { settings in
+            DispatchQueue.main.async {
+                print("\n📱 NOTIFICATION STATUS DEBUG:")
+                print("Authorization: \(settings.authorizationStatus.rawValue) (\(self.authStatusString(settings.authorizationStatus)))")
+                print("Alert: \(settings.alertSetting.rawValue) (\(self.settingString(settings.alertSetting)))")
+                print("Badge: \(settings.badgeSetting.rawValue) (\(self.settingString(settings.badgeSetting)))")
+                print("Sound: \(settings.soundSetting.rawValue) (\(self.settingString(settings.soundSetting)))")
+                print("Notification Center: \(settings.notificationCenterSetting.rawValue) (\(self.settingString(settings.notificationCenterSetting)))")
+                print("Lock Screen: \(settings.lockScreenSetting.rawValue) (\(self.settingString(settings.lockScreenSetting)))")
+                if #available(iOS 15.0, *) {
+                    print("Time Sensitive: \(settings.timeSensitiveSetting.rawValue) (\(self.settingString(settings.timeSensitiveSetting)))")
+                }
+                print("Current Badge: \(UIApplication.shared.applicationIconBadgeNumber)")
+            }
+        }
+        
+        UNUserNotificationCenter.current().getPendingNotificationRequests { requests in
+            DispatchQueue.main.async {
+                print("Pending Notifications: \(requests.count)")
+            }
+        }
+    }
+    
+    private func authStatusString(_ status: UNAuthorizationStatus) -> String {
+        switch status {
+        case .notDetermined: return "Not Determined"
+        case .denied: return "Denied"
+        case .authorized: return "Authorized"
+        case .provisional: return "Provisional"
+        case .ephemeral: return "Ephemeral"
+        @unknown default: return "Unknown"
+        }
+    }
+    
+    private func settingString(_ setting: UNNotificationSetting) -> String {
+        switch setting {
+        case .notSupported: return "Not Supported"
+        case .disabled: return "Disabled"
+        case .enabled: return "Enabled"
+        @unknown default: return "Unknown"
         }
     }
 }

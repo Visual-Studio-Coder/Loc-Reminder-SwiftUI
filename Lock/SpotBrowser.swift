@@ -10,9 +10,12 @@ import SwiftUI
 
 struct SpotBrowser: View {
     @Environment(\.managedObjectContext) var moc
+    @EnvironmentObject var locationManager: LocationDataManager
     @FetchRequest(sortDescriptors: [NSSortDescriptor(keyPath: \Spots.nameOfLocation, ascending: true)]) var spots: FetchedResults<Spots>
     @State private var showingAddSpot = false
     @State private var searchText = ""
+    @State private var spotToEdit: Spots?
+    @Binding var spotToEditFromNotification: String?
     
     var filteredSpots: [Spots] {
         if searchText.isEmpty {
@@ -88,14 +91,35 @@ struct SpotBrowser: View {
             }
             .sheet(isPresented: $showingAddSpot) {
                 AddSpotView()
+                    .environmentObject(locationManager)
+                    .environment(\.managedObjectContext, moc)
             }
+        }
+        .onReceive(NotificationCenter.default.publisher(for: NSNotification.Name("OpenSpotForEditing"))) { notification in
+            if let spotId = notification.userInfo?["spotId"] as? String,
+               let uuid = UUID(uuidString: spotId),
+               let spot = spots.first(where: { $0.id == uuid }) {
+                spotToEdit = spot
+            }
+        }
+        .onChange(of: spotToEditFromNotification) { spotId in
+            if let spotId = spotId,
+               let uuid = UUID(uuidString: spotId),
+               let spot = spots.first(where: { $0.id == uuid }) {
+                spotToEdit = spot
+                spotToEditFromNotification = nil // Reset after handling
+            }
+        }
+        .sheet(item: $spotToEdit) { spot in
+            EditSpotView(spot: spot)
+                .environmentObject(locationManager)
+                .environment(\.managedObjectContext, moc)
         }
     }
     
     private func deleteSpot(_ spot: Spots) {
-        // Stop monitoring this region
+        // Stop monitoring this region using the shared location manager
         if let spotId = spot.id {
-            let locationManager = LocationDataManager()
             for region in locationManager.locationManager.monitoredRegions {
                 if region.identifier == spotId.uuidString {
                     locationManager.locationManager.stopMonitoring(for: region)
@@ -120,7 +144,7 @@ struct SpotBrowser: View {
 struct SpotRowView: View {
     let spot: Spots
     @State private var showingEditView = false
-    @StateObject private var locationManager = LocationDataManager()
+    @EnvironmentObject var locationManager: LocationDataManager // Use environment object instead
     @Environment(\.managedObjectContext) var moc
     @State private var refreshTrigger = false
     
@@ -332,6 +356,8 @@ struct SpotRowView: View {
         }
         .sheet(isPresented: $showingEditView) {
             EditSpotView(spot: spot)
+                .environmentObject(locationManager)
+                .environment(\.managedObjectContext, moc)
         }
         .onReceive(NotificationCenter.default.publisher(for: .NSManagedObjectContextDidSave)) { _ in
             // Force view refresh when Core Data context saves
@@ -341,7 +367,7 @@ struct SpotRowView: View {
     }
     
     private func deleteSpot() {
-        // Stop monitoring this region
+        // Stop monitoring this region using the shared location manager
         if let spotId = spot.id {
             for region in locationManager.locationManager.monitoredRegions {
                 if region.identifier == spotId.uuidString {
@@ -393,6 +419,6 @@ struct SpotRowView: View {
 
 struct SpotBrowser_Previews: PreviewProvider {
     static var previews: some View {
-        SpotBrowser()
+        SpotBrowser(spotToEditFromNotification: .constant(nil))
     }
 }

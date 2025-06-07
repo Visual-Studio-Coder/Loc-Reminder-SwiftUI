@@ -14,12 +14,13 @@ import CoreLocation
 
 
 struct AddSpotView: View {
+    @Environment(\.managedObjectContext) private var moc // Use environment context
+    @EnvironmentObject private var locationManager: LocationDataManager // Use environment object
+    @Environment(\.dismiss) private var dismiss
     
-    @Environment(\.managedObjectContext) var moc
-    @Environment(\.dismiss) var dismiss
-    
-    // Add LocationDataManager to start monitoring
-    @StateObject private var locationManager = LocationDataManager()
+    // REMOVE any lines like these if they exist:
+    // @StateObject private var dataController = DataController()
+    // @StateObject private var locationManager = LocationDataManager()
     
     let geocoder = CLGeocoder()
     @State private var notificationTitle = ""
@@ -218,7 +219,7 @@ struct AddSpotView: View {
                         print("   Saved Latitude: \(newSpot.latitude)")
                         print("   Saved Longitude: \(newSpot.longitude)")
                         
-                        // Start monitoring this location
+                        // Start monitoring this location using the shared instance
                         let coordinate = CLLocationCoordinate2D(latitude: location.latitude, longitude: location.longitude)
                         locationManager.monitorRegionAtLocation(center: coordinate, identifier: newSpot.id!.uuidString)
                         
@@ -299,7 +300,7 @@ struct AddSpotView: View {
                                     newSpot.longitude = location.longitude
                                     newSpot.latitude = location.latitude
                                     
-                                    // Start monitoring this location
+                                    // Start monitoring this location using the shared instance
                                     let coordinate = CLLocationCoordinate2D(latitude: location.latitude, longitude: location.longitude)
                                     locationManager.monitorRegionAtLocation(center: coordinate, identifier: newSpot.id!.uuidString)
                                     

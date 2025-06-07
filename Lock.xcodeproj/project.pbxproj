@@ -356,6 +356,7 @@
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = Lock/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = "Loc Reminder";
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.utilities";
 				INFOPLIST_KEY_NSHumanReadableCopyright = "Copyright © 2025 Vaibhav Satishkumar. All rights reserved.";
 				INFOPLIST_KEY_NSLocationAlwaysAndWhenInUseUsageDescription = "Enable location so we can detect when you have left your desired location.";
 				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "Enable location so we can detect when you have left your desired location.";
@@ -394,6 +395,7 @@
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = Lock/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = "Loc Reminder";
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.utilities";
 				INFOPLIST_KEY_NSHumanReadableCopyright = "Copyright © 2025 Vaibhav Satishkumar. All rights reserved.";
 				INFOPLIST_KEY_NSLocationAlwaysAndWhenInUseUsageDescription = "Enable location so we can detect when you have left your desired location.";
 				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "Enable location so we can detect when you have left your desired location.";
