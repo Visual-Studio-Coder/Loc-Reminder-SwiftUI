@@ -210,7 +210,7 @@ struct InfoTab: View {
         content.title = "🧪 Test Location Reminder"
         content.body = "Did you remember to lock your house? Tap to respond."
         content.sound = UNNotificationSound.default
-        content.categoryIdentifier = "LOCATION_REMINDER" // Use the same category as real notifications
+        content.categoryIdentifier = "LOCATION_REMINDER"
         content.userInfo = [
             "spotName": "Test Location", 
             "spotId": "test-spot-id", 
@@ -218,20 +218,12 @@ struct InfoTab: View {
             "isTestNotification": true
         ]
         
-        // Set badge to a persistent number
+        // Set badge to a persistent number and don't let it auto-clear
         content.badge = NSNumber(value: 1)
         
         // Use immediate trigger for testing
         let trigger = UNTimeIntervalNotificationTrigger(timeInterval: 0.1, repeats: false)
         let request = UNNotificationRequest(identifier: "test-notification-\(Date().timeIntervalSince1970)", content: content, trigger: trigger)
-        
-        print("📤 Attempting to send test notification...")
-        print("   Title: \(content.title)")
-        print("   Body: \(content.body)")
-        print("   Category: \(content.categoryIdentifier)")
-        print("   Badge: \(content.badge?.intValue ?? 0)")
-        print("   Identifier: \(request.identifier)")
-        print("   ⏰ Will fire in 0.1 seconds")
         
         center.add(request) { error in
             DispatchQueue.main.async {
@@ -239,23 +231,15 @@ struct InfoTab: View {
                     print("❌ Test notification error: \(error.localizedDescription)")
                 } else {
                     print("✅ Test notification queued successfully")
-                    print("   🔔 Should appear with action buttons: 👍 Good, 👎 Not Good, ✏️ Edit")
                     
-                    // Set the badge explicitly on the app
+                    // Set the badge explicitly and keep it persistent
                     UIApplication.shared.applicationIconBadgeNumber = 1
                     
-                    // Show backup alert after 5 seconds if needed
-                    DispatchQueue.main.asyncAfter(deadline: .now() + 5.0) {
-                        self.showTestAlert()
-                    }
-                    
-                    if let logManager = LogManager.shared as? LogManager {
-                        logManager.addLog(
-                            eventType: .notificationSent,
-                            spotName: "Test Location",
-                            message: "Interactive test notification sent with Good/Not Good/Edit actions"
-                        )
-                    }
+                    LogManager.shared.addLog(
+                        eventType: .notificationSent,
+                        spotName: "Test Location",
+                        message: "Interactive test notification sent with Good/Not Good/Edit actions"
+                    )
                 }
             }
         }

@@ -9,20 +9,11 @@
 import SwiftUI
 import CoreData
 
-struct LogEntry: Identifiable {
-    let id = UUID()
-    let timestamp: Date
-    let eventType: LogEventType
-    let spotName: String
-    let message: String
-    let userResponse: String?
-}
-
-enum LogEventType {
-    case entered
-    case exited
-    case notificationSent
-    case userResponse
+enum LogEventType: String, CaseIterable {
+    case entered = "regionEntered"
+    case exited = "regionExited" 
+    case notificationSent = "notificationSent"
+    case userResponse = "userResponse"
     
     var icon: String {
         switch self {
@@ -45,146 +36,297 @@ enum LogEventType {
 
 class LogManager: ObservableObject {
     static let shared = LogManager()
-    @Published var logs: [LogEntry] = []
+    private var managedObjectContext: NSManagedObjectContext?
     
-    private init() {
-        // Listen for notification responses
-        NotificationCenter.default.addObserver(
-            self,
-            selector: #selector(handleNotificationResponse),
-            name: NSNotification.Name("NotificationResponse"),
-            object: nil
-        )
+    private init() {}
+    
+    func setManagedObjectContext(_ context: NSManagedObjectContext) {
+        self.managedObjectContext = context
     }
     
-    func addLog(eventType: LogEventType, spotName: String, message: String, userResponse: String? = nil) {
-        DispatchQueue.main.async {
-            let entry = LogEntry(
-                timestamp: Date(),
-                eventType: eventType,
-                spotName: spotName,
-                message: message,
-                userResponse: userResponse
-            )
-            self.logs.insert(entry, at: 0) // Add to beginning for newest first
-            
-            // Keep only last 100 entries
-            if self.logs.count > 100 {
-                self.logs = Array(self.logs.prefix(100))
-            }
+    func addLog(eventType: LogEventType, spotName: String, message: String) {
+        // Always use main queue and handle both foreground and background
+        DispatchQueue.main.async { [weak self] in
+            self?.performLogSave(eventType: eventType, spotName: spotName, message: message)
         }
     }
     
-    @objc private func handleNotificationResponse(_ notification: Notification) {
-        if let userInfo = notification.userInfo,
-           let response = userInfo["response"] as? String,
-           let spotName = userInfo["spotName"] as? String {
-            addLog(
-                eventType: .userResponse,
-                spotName: spotName,
-                message: "User responded to notification",
-                userResponse: response
-            )
+    private func performLogSave(eventType: LogEventType, spotName: String, message: String) {
+        guard let context = managedObjectContext else {
+            print("❌ LogManager: No managed object context available")
+            // Try to get context from DataController as fallback
+            let dataController = DataController()
+            let context = dataController.container.viewContext
+            
+            let logEntry = NSEntityDescription.entity(forEntityName: "LogEntry", in: context)!
+            let newLog = NSManagedObject(entity: logEntry, insertInto: context)
+            
+            newLog.setValue(Date(), forKey: "timestamp")
+            newLog.setValue(eventType.rawValue, forKey: "eventType")
+            newLog.setValue(spotName, forKey: "spotName")
+            newLog.setValue(message, forKey: "message")
+            newLog.setValue(UUID(), forKey: "id")
+            
+            do {
+                try context.save()
+                print("✅ Log saved (fallback): \(eventType.rawValue) - \(spotName) - \(message)")
+            } catch {
+                print("❌ Failed to save log (fallback): \(error)")
+            }
+            return
+        }
+        
+        // Create a new LogEntry Core Data entity
+        let logEntry = NSEntityDescription.entity(forEntityName: "LogEntry", in: context)!
+        let newLog = NSManagedObject(entity: logEntry, insertInto: context)
+        
+        newLog.setValue(Date(), forKey: "timestamp")
+        newLog.setValue(eventType.rawValue, forKey: "eventType")
+        newLog.setValue(spotName, forKey: "spotName")
+        newLog.setValue(message, forKey: "message")
+        newLog.setValue(UUID(), forKey: "id")
+        
+        do {
+            try context.save()
+            print("✅ Log saved: \(eventType.rawValue) - \(spotName) - \(message)")
+            
+            // Post notification to refresh UI
+            NotificationCenter.default.post(name: .NSManagedObjectContextDidSave, object: context)
+        } catch {
+            print("❌ Failed to save log: \(error)")
         }
     }
 }
 
 struct SpotNotificationLogger: View {
-    @Environment(\.managedObjectContext) private var moc // Use environment context
-    @EnvironmentObject private var locationManager: LocationDataManager // Use environment object
-    @StateObject private var logManager = LogManager.shared // Add this line
+    @Environment(\.managedObjectContext) private var moc
+    @EnvironmentObject private var locationManager: LocationDataManager
+    @State private var logEntries: [NSManagedObject] = []
     
     var body: some View {
         NavigationView {
-            VStack {
-                if logManager.logs.isEmpty {
+            List {
+                if logEntries.isEmpty {
                     VStack(spacing: 20) {
-                        Image(systemName: "doc.text")
-                            .font(.system(size: 60))
-                            .foregroundColor(.gray)
-                        Text("No logs yet")
-                            .font(.title2)
-                            .foregroundColor(.gray)
-                        Text("Geofence events and notification responses will appear here")
-                            .multilineTextAlignment(.center)
+                        Image(systemName: "list.bullet.clipboard")
+                            .font(.system(size: 50))
                             .foregroundColor(.secondary)
-                            .padding(.horizontal)
+                        
+                        Text("No Activity Yet")
+                            .font(.title2)
+                            .fontWeight(.semibold)
+                            .foregroundColor(.secondary)
+                        
+                        Text("Location-based notifications and user responses will appear here")
+                            .font(.caption)
+                            .foregroundColor(.secondary)
+                            .multilineTextAlignment(.center)
                     }
                     .frame(maxWidth: .infinity, maxHeight: .infinity)
+                    .listRowSeparator(.hidden)
                 } else {
-                    List(logManager.logs) { log in
-                        LogRowView(log: log)
+                    ForEach(logEntries, id: \.objectID) { logEntry in
+                        LogEntryRow(logEntry: logEntry)
                     }
-                    .refreshable {
-                        // Optional: Add refresh functionality
-                    }
+                    .onDelete(perform: deleteLogEntries)
                 }
             }
             .navigationTitle("Activity Logs")
             .toolbar {
-                ToolbarItem(placement: .navigationBarTrailing) {
-                    Button("Clear") {
-                        logManager.logs.removeAll()
+                if !logEntries.isEmpty {
+                    ToolbarItem(placement: .navigationBarTrailing) {
+                        Button("Clear All") {
+                            clearAllLogs()
+                        }
+                        .foregroundColor(.red)
                     }
-                    .disabled(logManager.logs.isEmpty)
                 }
             }
-            .onAppear {
-                // Reset badge when user views the logs
-                UIApplication.shared.applicationIconBadgeNumber = 0
+        }
+        .onAppear {
+            LogManager.shared.setManagedObjectContext(moc)
+            fetchLogEntries()
+        }
+        .onReceive(NotificationCenter.default.publisher(for: .NSManagedObjectContextDidSave)) { _ in
+            fetchLogEntries()
+        }
+    }
+    
+    private func fetchLogEntries() {
+        let request = NSFetchRequest<NSManagedObject>(entityName: "LogEntry")
+        request.sortDescriptors = [NSSortDescriptor(key: "timestamp", ascending: false)]
+        
+        do {
+            logEntries = try moc.fetch(request)
+        } catch {
+            print("❌ Error fetching log entries: \(error)")
+            logEntries = []
+        }
+    }
+    
+    private func deleteLogEntries(offsets: IndexSet) {
+        withAnimation {
+            offsets.map { logEntries[$0] }.forEach(moc.delete)
+            
+            do {
+                try moc.save()
+                fetchLogEntries()
+            } catch {
+                print("❌ Error deleting log entries: \(error)")
+            }
+        }
+    }
+    
+    private func clearAllLogs() {
+        withAnimation {
+            logEntries.forEach(moc.delete)
+            
+            do {
+                try moc.save()
+                fetchLogEntries()
+                print("✅ All logs cleared")
+            } catch {
+                print("❌ Error clearing logs: \(error)")
             }
         }
     }
 }
 
-struct LogRowView: View {
-    let log: LogEntry
+struct LogEntryRow: View {
+    let logEntry: NSManagedObject
     
     var body: some View {
         VStack(alignment: .leading, spacing: 8) {
             HStack {
-                Image(systemName: log.eventType.icon)
-                    .foregroundColor(log.eventType.color)
-                    .frame(width: 24)
+                Image(systemName: eventTypeIcon)
+                    .foregroundColor(eventTypeColor)
+                    .frame(width: 20, height: 20)
                 
                 VStack(alignment: .leading, spacing: 2) {
                     HStack {
-                        Text(log.spotName)
+                        Text(logEntry.value(forKey: "spotName") as? String ?? "Unknown Location")
                             .font(.headline)
+                            .foregroundColor(.primary)
+                        
                         Spacer()
-                        Text(formatTime(log.timestamp))
+                        
+                        Text(formatDate(logEntry.value(forKey: "timestamp") as? Date))
                             .font(.caption)
                             .foregroundColor(.secondary)
                     }
                     
-                    Text(log.message)
+                    Text(eventTypeDescription)
                         .font(.subheadline)
                         .foregroundColor(.secondary)
-                    
-                    if let response = log.userResponse {
-                        HStack {
-                            Image(systemName: "bubble.right.fill")
-                                .foregroundColor(.purple)
-                                .font(.caption)
-                            Text("Response: \(response)")
-                                .font(.caption)
-                                .padding(.horizontal, 8)
-                                .padding(.vertical, 4)
-                                .background(Color.purple.opacity(0.1))
-                                .cornerRadius(8)
-                        }
-                        .padding(.top, 4)
-                    }
                 }
+            }
+            
+            if let eventType = logEntry.value(forKey: "eventType") as? String,
+               eventType == "userResponse",
+               let message = logEntry.value(forKey: "message") as? String {
+                HStack {
+                    Spacer()
+                    Text(message)
+                        .font(.caption)
+                        .padding(.horizontal, 12)
+                        .padding(.vertical, 4)
+                        .background(
+                            Capsule()
+                                .fill(responseColor.opacity(0.2))
+                        )
+                        .foregroundColor(responseColor)
+                }
+            } else if let message = logEntry.value(forKey: "message") as? String, !message.isEmpty {
+                Text(message)
+                    .font(.caption)
+                    .foregroundColor(.secondary)
+                    .padding(.leading, 28)
             }
         }
         .padding(.vertical, 4)
     }
     
-    private func formatTime(_ date: Date) -> String {
+    private var eventTypeIcon: String {
+        guard let eventType = logEntry.value(forKey: "eventType") as? String else { return "circle.fill" }
+        
+        switch eventType {
+        case "regionEntered":
+            return "arrow.right.circle.fill"
+        case "regionExited":
+            return "arrow.left.circle.fill"
+        case "notificationSent":
+            return "bell.fill"
+        case "userResponse":
+            return "bubble.right.fill"
+        default:
+            return "circle.fill"
+        }
+    }
+    
+    private var eventTypeColor: Color {
+        guard let eventType = logEntry.value(forKey: "eventType") as? String else { return .gray }
+        
+        switch eventType {
+        case "regionEntered":
+            return .green
+        case "regionExited":
+            return .orange
+        case "notificationSent":
+            return .blue
+        case "userResponse":
+            return .purple
+        default:
+            return .gray
+        }
+    }
+    
+    private var eventTypeDescription: String {
+        guard let eventType = logEntry.value(forKey: "eventType") as? String else { return "Unknown event" }
+        
+        switch eventType {
+        case "regionEntered":
+            return "Entered location"
+        case "regionExited":
+            return "Left location"
+        case "notificationSent":
+            return "Notification sent"
+        case "userResponse":
+            return "User response:"
+        default:
+            return eventType.capitalized
+        }
+    }
+    
+    private var responseColor: Color {
+        guard let message = logEntry.value(forKey: "message") as? String else { return .gray }
+        
+        switch message.lowercased() {
+        case "good":
+            return .green
+        case "not good":
+            return .red
+        case "edit":
+            return .blue
+        case "tapped":
+            return .gray
+        case "dismissed":
+            return .orange
+        default:
+            return .purple
+        }
+    }
+    
+    private func formatDate(_ date: Date?) -> String {
+        guard let date = date else { return "Unknown" }
+        
         let formatter = DateFormatter()
-        formatter.timeStyle = .short
-        formatter.dateStyle = .none
+        if Calendar.current.isDate(date, inSameDayAs: Date()) {
+            formatter.dateFormat = "h:mm a"
+        } else if Calendar.current.isDate(date, equalTo: Date(), toGranularity: .weekOfYear) {
+            formatter.dateFormat = "E h:mm a"
+        } else {
+            formatter.dateFormat = "MMM d, h:mm a"
+        }
         return formatter.string(from: date)
     }
 }

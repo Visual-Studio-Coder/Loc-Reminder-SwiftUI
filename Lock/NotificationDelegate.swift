@@ -5,114 +5,122 @@ import SwiftUI
 
 class NotificationDelegate: NSObject, UNUserNotificationCenterDelegate {
     static let shared = NotificationDelegate()
+    private var processedResponses: Set<String> = []
+    
+    private override init() {
+        super.init()
+    }
+    
+    func userNotificationCenter(_ center: UNUserNotificationCenter, willPresent notification: UNNotification, withCompletionHandler completionHandler: @escaping (UNNotificationPresentationOptions) -> Void) {
+        print("📱 Will present notification: \(notification.request.content.title)")
+        
+        // Keep the badge persistent
+        let currentBadge = UIApplication.shared.applicationIconBadgeNumber
+        UIApplication.shared.applicationIconBadgeNumber = max(1, currentBadge)
+        
+        if #available(iOS 14.0, *) {
+            completionHandler([.banner, .sound, .badge])
+        } else {
+            completionHandler([.alert, .sound, .badge])
+        }
+    }
     
     func userNotificationCenter(_ center: UNUserNotificationCenter, didReceive response: UNNotificationResponse, withCompletionHandler completionHandler: @escaping () -> Void) {
         print("📱 Did receive notification response: \(response.notification.request.content.title)")
         print("   Action identifier: \(response.actionIdentifier)")
+        
+        // Create unique response ID to prevent duplicates
+        let responseId = "\(response.notification.request.identifier)-\(response.actionIdentifier)"
+        
+        // Check if we've already processed this response
+        if processedResponses.contains(responseId) {
+            print("🔄 Ignoring duplicate response: \(responseId)")
+            completionHandler()
+            return
+        }
+        
+        // Mark as processed
+        processedResponses.insert(responseId)
+        
+        // Clean up old processed responses (keep only last 50)
+        if processedResponses.count > 50 {
+            let sortedResponses = Array(processedResponses)
+            processedResponses = Set(sortedResponses.suffix(25))
+        }
         
         let userInfo = response.notification.request.content.userInfo
         let spotName = userInfo["spotName"] as? String ?? "Unknown Location"
         let spotId = userInfo["spotId"] as? String
         let isTestNotification = userInfo["isTestNotification"] as? Bool ?? false
         
+        // Always clear the badge when user responds
+        UIApplication.shared.applicationIconBadgeNumber = 0
+        
         // Handle different actions using the correct identifiers
         switch response.actionIdentifier {
         case "GOOD":
             print("✅ User responded: GOOD to \(spotName)")
-            if let logManager = LogManager.shared as? LogManager {
-                logManager.addLog(
-                    eventType: .userResponse,
-                    spotName: spotName,
-                    message: "Good"
-                )
-            }
+            LogManager.shared.addLog(
+                eventType: .userResponse,
+                spotName: spotName,
+                message: "Good"
+            )
             
         case "BAD":
             print("❌ User responded: BAD to \(spotName)")
-            if let logManager = LogManager.shared as? LogManager {
-                logManager.addLog(
-                    eventType: .userResponse,
-                    spotName: spotName,
-                    message: "Not Good"
-                )
-            }
+            LogManager.shared.addLog(
+                eventType: .userResponse,
+                spotName: spotName,
+                message: "Not Good"
+            )
             // Schedule a reminder for later
             scheduleReminderNotification(spotName: spotName, isTest: isTestNotification)
             
-        case "EDIT", "EDIT_SPOT": // Handle both possible identifiers
+        case "EDIT", "EDIT_SPOT":
             print("✏️ User chose: EDIT for \(spotName)")
-            if let logManager = LogManager.shared as? LogManager {
-                logManager.addLog(
-                    eventType: .userResponse,
-                    spotName: spotName,
-                    message: "Edit"
-                )
-            }
+            LogManager.shared.addLog(
+                eventType: .userResponse,
+                spotName: spotName,
+                message: "Edit"
+            )
             
             // Open the app to the spot editing view
             if let spotId = spotId, !isTestNotification {
                 DispatchQueue.main.async {
-                    // Post a notification to open the specific spot for editing
                     NotificationCenter.default.post(
                         name: NSNotification.Name("OpenSpotForEditing"),
                         object: nil,
                         userInfo: ["spotId": spotId]
                     )
                 }
-            } else if isTestNotification {
-                // For test notifications, just open the app to spots tab
-                DispatchQueue.main.async {
-                    NotificationCenter.default.post(
-                        name: NSNotification.Name("OpenSpotForEditing"),
-                        object: nil,
-                        userInfo: ["spotId": "test"] // This will be ignored but triggers tab switch
-                    )
-                }
             }
             
         case UNNotificationDefaultActionIdentifier:
             print("📱 User tapped notification for \(spotName)")
-            if let logManager = LogManager.shared as? LogManager {
-                logManager.addLog(
-                    eventType: .userResponse,
-                    spotName: spotName,
-                    message: "Tapped"
-                )
-            }
+            LogManager.shared.addLog(
+                eventType: .userResponse,
+                spotName: spotName,
+                message: "Tapped"
+            )
             
         case UNNotificationDismissActionIdentifier:
             print("🚫 User dismissed notification for \(spotName)")
-            if let logManager = LogManager.shared as? LogManager {
-                logManager.addLog(
-                    eventType: .userResponse,
-                    spotName: spotName,
-                    message: "Dismissed"
-                )
-            }
+            LogManager.shared.addLog(
+                eventType: .userResponse,
+                spotName: spotName,
+                message: "Dismissed"
+            )
             
         default:
             print("📱 Unknown action: \(response.actionIdentifier)")
-            if let logManager = LogManager.shared as? LogManager {
-                logManager.addLog(
-                    eventType: .userResponse,
-                    spotName: spotName,
-                    message: response.actionIdentifier
-                )
-            }
+            LogManager.shared.addLog(
+                eventType: .userResponse,
+                spotName: spotName,
+                message: response.actionIdentifier
+            )
         }
         
         completionHandler()
-    }
-    
-    func userNotificationCenter(_ center: UNUserNotificationCenter, willPresent notification: UNNotification, withCompletionHandler completionHandler: @escaping (UNNotificationPresentationOptions) -> Void) {
-        print("📱 Will present notification: \(notification.request.content.title)")
-        
-        // Show the notification with banner, sound, and badge
-        if #available(iOS 14.0, *) {
-            completionHandler([.banner, .sound, .badge])
-        } else {
-            completionHandler([.alert, .sound, .badge])
-        }
     }
     
     private func scheduleReminderNotification(spotName: String, isTest: Bool) {
